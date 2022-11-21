@@ -23,14 +23,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:vector-im/hydrogen-web.git"
+    "url": "git@github.com:clover-network/hydrogen-web.git"
   },
   "author": "matrix.org",
   "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/vector-im/hydrogen-web/issues"
-  },
-  "homepage": "https://github.com/vector-im/hydrogen-web/#readme",
+  "homepage": "https://github.com/clover-network/hydrogen-web/blob/master/README.md",
   "devDependencies": {
     "@playwright/test": "^1.27.1",
     "@typescript-eslint/eslint-plugin": "^4.29.2",
