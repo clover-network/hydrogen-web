@@ -76,7 +76,7 @@ export function tileClassForEntry(entry: TimelineEntry): TileConstructor | undef
                 }
             }
             case "m.room.name":
-                return RoomNameTile;
+                return undefined;
             case "m.room.member":
                 return RoomMemberTile;
             case "m.room.encrypted":

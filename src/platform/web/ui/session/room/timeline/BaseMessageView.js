@@ -14,14 +14,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
-import {renderStaticAvatar} from "../../../avatar";
-import {tag} from "../../../general/html";
-import {mountView} from "../../../general/utils";
-import {TemplateView} from "../../../general/TemplateView";
-import {Popup} from "../../../general/Popup.js";
-import {Menu} from "../../../general/Menu.js";
-import {ReactionsView} from "./ReactionsView.js";
+import { renderStaticAvatar } from "../../../avatar";
+import { tag } from "../../../general/html";
+import { mountView } from "../../../general/utils";
+import { TemplateView } from "../../../general/TemplateView";
+import { Popup } from "../../../general/Popup.js";
+import { Menu } from "../../../general/Menu.js";
+import { ReactionsView } from "./ReactionsView.js";
 
 export class BaseMessageView extends TemplateView {
     constructor(value, viewClassForTile, renderFlags, tagName = "li") {
@@ -37,18 +36,37 @@ export class BaseMessageView extends TemplateView {
     get _isReplyPreview() { return this._renderFlags?.reply; }
 
     render(t, vm) {
+        const timeTitle = t.div({ className: { hidden: !vm.date, timeTitle: true } });
+        const timeTitleTimer = t.time({ className: {} }, vm.date);
+        timeTitle.appendChild(timeTitleTimer)
         const children = [this.renderMessageBody(t, vm)];
-        if (this._interactive) {
-            children.push(t.button({className: "Timeline_messageOptions"}, "⋯"));
+        let dropDownAnchor = null
+        if (vm.shape !== "redacted") {
+            dropDownAnchor = t.div({ className: 'Timeline_messageBody', onMouseUp: (e) => {
+                if (!e) e = window.event;
+                if (e.button == 2) {
+                    this._toggleMenuMore(e.target, vm)
+                }
+            } });
+            children.push(dropDownAnchor);
         }
+
         const li = t.el(this._tagName, {
             className: {
                 "Timeline_message": true,
                 own: vm.isOwn,
+                newDay: !vm.isSameDay,
                 unsent: vm.isUnsent,
-                unverified: vm => vm.isUnverified,
+                unverified: vm.isUnverified,
                 disabled: !this._interactive,
+                haveThread: !!vm.threadAnchor,
                 continuation: vm => vm.isContinuation,
+            },
+            oncontextmenu: (e) => {
+                e?.preventDefault();
+                e?.stopPropagation();
+                this._toggleMenuMore(dropDownAnchor, vm)
+                return false
             },
             'data-event-id': vm.eventId
         }, children);
@@ -62,8 +80,8 @@ export class BaseMessageView extends TemplateView {
                 li.removeChild(li.querySelector(".Timeline_messageAvatar"));
                 li.removeChild(li.querySelector(".Timeline_messageSender"));
             } else if (!isContinuation && !this._isReplyPreview) {
-                const avatar = tag.a({href: vm.memberPanelLink, className: "Timeline_messageAvatar"}, [renderStaticAvatar(vm, 30)]);
-                const sender = tag.div({className: `Timeline_messageSender usercolor${vm.avatarColorNumber}`}, vm.displayName);
+                const avatar = tag.div({ 'data-href': vm.memberPanelLink, className: "Timeline_messageAvatar" }, [renderStaticAvatar(vm, 40)]);
+                const sender = tag.div({ className: `Timeline_messageSender usercolor${vm.avatarColorNumber}` }, vm.displayName);
                 li.insertBefore(avatar, li.firstChild);
                 li.insertBefore(sender, li.firstChild);
             }
@@ -72,6 +90,7 @@ export class BaseMessageView extends TemplateView {
         // but that adds a comment node to all messages without reactions
         let reactionsView = null;
         t.mapSideEffect(vm => vm.reactions, reactions => {
+            // console.log('reactions:', reactions)
             if (reactions && this._interactive && !reactionsView) {
                 reactionsView = new ReactionsView(reactions);
                 this.addSubView(reactionsView);
@@ -83,6 +102,17 @@ export class BaseMessageView extends TemplateView {
                 reactionsView = null;
             }
         });
+        li.appendChild(timeTitle)
+        t.mapSideEffect(vm => vm.threadAnchor, threadAnchor => {
+            if (threadAnchor) {
+                const threadLabel = t.div({ className: 'thread-label', 'data-ithread': threadAnchor }, 'Open thread');
+                li.appendChild(threadLabel);
+                if (!li.classList.contains('haveThread')) {
+                    li.classList.add('haveThread')
+                }
+            }
+
+        })
         return li;
     }
 
@@ -97,33 +127,70 @@ export class BaseMessageView extends TemplateView {
         if (this._menuPopup && this._menuPopup.isOpen) {
             this._menuPopup.close();
         } else {
-            const options = this.createMenuOptions(this.value);
+            const options = this.createMenuOptions(this.value, button);
             if (!options.length) {
                 return;
             }
             this.root().classList.add("menuOpen");
             const onClose = () => this.root().classList.remove("menuOpen");
-            this._menuPopup = new Popup(new Menu(options), onClose);
+            this._menuPopup = new Popup(new Menu(options, 'msg-hover'), onClose);
             this._menuPopup.trackInTemplateView(this);
             this._menuPopup.showRelativeTo(button, 2);
         }
     }
+    _toggleEmojiMenu(button, vm) {
+        const options = [];
+        options.push(new QuickReactionsMenuOption(vm))
+        this.root().classList.add("menuOpen");
+        const onClose = () => this.root().classList.remove("menuOpen");
+        this._menuPopup = new Popup(new Menu(options, 'msg-hover'), onClose);
+        this._menuPopup.trackInTemplateView(this);
+        this._menuPopup.showRelativeTo(button, 2);
+    }
+    _toggleMenuMore(button, vm) {
+        const options = [];
+        // options.push(Menu.option(vm.i18n`Pin message`, () => { }).setIcon('msg-menu-more-pin').setData(`${vm.sender}`));
+        // if (!vm.isOwn) {
+        //     options.push(Menu.option(vm.i18n`Message user`, () => { }).setIcon('msg-menu-more-msg').setData(`${vm.sender}`));
+        // }
+        options.push(Menu.option(vm.i18n`Reply`, () => vm.startReply()).setIcon('msg-menu-more-reply'));
+        options.push(Menu.option(vm.i18n`Forward`, () => { }).setIcon('msg-menu-more-forward'));
+        // options.push(Menu.option(vm.i18n`Add reaction`, () => this._toggleEmojiMenu(button, vm)).setIcon('msg-menu-more-emoji'));
+        // if (!vm.threadAnchor) {
+        //     options.push(Menu.option(vm.i18n`Create thread`, (e) => {
+        //         e.sendReact = (threadId) => vm.react(threadId)
+        //     }).setIcon('msg-menu-more-thread').setData(`${vm.sender}`));
+        // }
+        // options.push(Menu.option(vm.i18n`Copy message link`, () => { }).setIcon('msg-menu-more-cp-link').setData(`${vm.sender}`));
+        options.push(Menu.option(vm.i18n`Copy`, () => { }).setIcon('msg-menu-more-cp-copy').setData(`${vm.sender}`));
+        if (vm.canRedact) {
+            options.push(Menu.option(vm.i18n`Delete message`, () => vm.redact()).setDestructive().setIcon('msg-menu-more-del'));
+        }
+        this.root().classList.add("menuOpen");
+        const onClose = () => this.root().classList.remove("menuOpen");
+        this._menuPopup = new Popup(new Menu(options, 'msg-vertical'), onClose);
+        this._menuPopup.trackInTemplateView(this);
+        this._menuPopup.showRelativeTo(button, 2);
+    }
 
-    createMenuOptions(vm) {
+    createMenuOptions(vm, target) {
         const options = [];
         if (vm.canReact && vm.shape !== "redacted" && !vm.isPending) {
-            options.push(new QuickReactionsMenuOption(vm));
-            options.push(Menu.option(vm.i18n`Reply`, () => vm.startReply()));
+            options.push(Menu.option(vm.i18n``, () => this._toggleEmojiMenu(target, vm)).setIcon('emoji'));
+            // options.push(new QuickReactionsMenuOption(vm));
+            options.push(Menu.option(vm.i18n``, () => vm.startReply()).setIcon('reply'));
         }
-        if (vm.canAbortSending) {
-            options.push(Menu.option(vm.i18n`Cancel`, () => vm.abortSending()));
-        } else if (vm.canRedact) {
-            options.push(Menu.option(vm.i18n`Delete`, () => vm.redact()).setDestructive());
-        }
+        options.push(Menu.option(vm.i18n``, () => { }).setIcon('thread'));
+        options.push(Menu.option(vm.i18n``, () => this._toggleMenuMore(target, vm)).setIcon('more'));
+        // if (vm.canAbortSending) {
+        //     options.push(Menu.option(vm.i18n`Cancel`, () => vm.abortSending()));
+        // } else if (vm.canRedact) {
+        //     options.push(Menu.option(vm.i18n`Delete`, () => vm.redact()).setDestructive());
+        // }
         return options;
     }
 
-    renderMessageBody() {}
+    renderMessageBody() { }
 }
 
 class QuickReactionsMenuOption {
@@ -132,14 +199,17 @@ class QuickReactionsMenuOption {
     }
     toDOM(t) {
         const emojiButtons = ["👍", "👎", "😄", "🎉", "😕", "❤️", "🚀", "👀"].map(emoji => {
-            return t.button({onClick: () => this._vm.react(emoji)}, emoji);
+            return t.button({ onClick: () => this._vm.react(emoji) }, emoji);
         });
-        const customButton = t.button({onClick: () => {
-            const key = prompt("Enter your reaction (emoji)");
-            if (key) {
-                this._vm.react(key);
+        const customButton = t.button({
+            className: 'emoji-more',
+            onClick: () => {
+                const key = prompt("Enter your reaction (emoji)");
+                if (key) {
+                    this._vm.react(key);
+                }
             }
-        }}, "…");
-        return t.li({className: "quick-reactions"}, [...emojiButtons, customButton]);
+        }, "…");
+        return t.li({ className: "quick-reactions" }, [...emojiButtons, customButton]);
     }
 }

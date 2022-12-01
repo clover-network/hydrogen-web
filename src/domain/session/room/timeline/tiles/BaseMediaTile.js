@@ -42,7 +42,7 @@ export class BaseMediaTile extends BaseMessageTile {
         let blob;
         try {
             blob = await this._mediaRepository.downloadAttachment(content);
-            this.platform.saveFileAs(blob, filename);
+            // this.platform.saveFileAs(blob, filename);
         } catch (err) {
             this._downloadError = err;
         } finally {

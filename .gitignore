@@ -11,3 +11,4 @@ lib
 .eslintcache
 .tmp
 playwright/synapselogs
+.idea

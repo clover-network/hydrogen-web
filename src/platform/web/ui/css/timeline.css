@@ -54,10 +54,11 @@ limitations under the License.
 
 .GapView {
     display: flex;
+    justify-content: center;
 }
 
 .GapView > :nth-child(2) {
-    flex: 1;
+    /* flex: 1; */
 }
 
 .Timeline_messageBody img {

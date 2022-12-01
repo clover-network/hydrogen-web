@@ -23,6 +23,10 @@ limitations under the License.
     flex: 1;
 }
 
+.middle-header button {
+    display: block;
+}
+
 .middle-header .room-description {
     flex: 1;
     min-width: 0;
@@ -58,13 +62,20 @@ limitations under the License.
 .MessageComposer_input {
     display: flex;
     align-items: center;
+    background-color: var(--background-color-secondary);
 }
 
-.MessageComposer_input > input {
+.MessageComposer_input>input {
     display: block;
     flex: 1;
     min-width: 0;
     box-sizing: border-box;
+}
+
+.MessageComposer_input .MessageComposer_input_container {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
 }
 
 .TimelineLoadingView {
@@ -73,6 +84,6 @@ limitations under the License.
     justify-content: center;
 }
 
-.TimelineLoadingView > :not(:first-child) {
+.TimelineLoadingView> :not(:first-child) {
     margin-left: 12px;
 }

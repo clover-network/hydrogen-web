@@ -21,13 +21,14 @@ export class Menu extends TemplateView {
         return new MenuOption(label, callback);
     }
 
-    constructor(options) {
+    constructor(options, className = "") {
         super();
         this._options = options;
+        this._className = className;
     }
 
     render(t) {
-        return t.ul({className: "menu", role: "menu"}, this._options.map(o => o.toDOM(t)));
+        return t.ul({ className: `menu ${this._className}`, role: "menu" }, this._options.map(o => o.toDOM(t)));
     }
 }
 
@@ -36,11 +37,17 @@ class MenuOption {
         this.label = label;
         this.callback = callback;
         this.icon = null;
+        this.data = null;
         this.destructive = false;
     }
 
     setIcon(className) {
         this.icon = className;
+        return this;
+    }
+
+    setData(data) {
+        this.data = data;
         return this;
     }
 
@@ -59,6 +66,7 @@ class MenuOption {
         }
         return t.li({
             className,
+            'data-iData': this.data || ''
         }, t.button({className:"menu-item", onClick: this.callback}, this.label));
     }
 }

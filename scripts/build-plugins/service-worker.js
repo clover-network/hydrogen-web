@@ -117,6 +117,7 @@ function replacePlaceholdersInChunks(assets, placeholdersPerChunk, placeholderVa
         for (const [placeholderName, placeholderLiteral] of Object.entries(placeholderMap)) {
             const replacedValue = placeholderValues[placeholderName];
             const oldCode = chunk.code;
+            // chunk.code = chunk.code.replace(`/${placeholderLiteral}/g`, replacedValue);
             chunk.code = chunk.code.replaceAll(placeholderLiteral, replacedValue);
             if (chunk.code === oldCode) {
                 throw new Error(`Could not replace ${placeholderName} in ${name}, looking for literal ${placeholderLiteral}:\n${chunk.code}`);

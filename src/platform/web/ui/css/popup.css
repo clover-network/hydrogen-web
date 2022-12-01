@@ -15,6 +15,6 @@ limitations under the License.
 */
 
 .popupContainer {
-    position: absolute;
+    position: static;
     white-space: nowrap;
 }

@@ -19,7 +19,9 @@ export class ReactionsViewModel {
     constructor(parentTile) {
         this._parentTile = parentTile;
         this._map = new ObservableMap();
-        this._reactions = this._map.sortValues((a, b) => a._compare(b));
+        this._reactions = this._map.filterValues((a) => {
+            return !a.key.startsWith('thrd')
+        }).sortValues((a, b) => a._compare(b));
     }
 
     /** @package */

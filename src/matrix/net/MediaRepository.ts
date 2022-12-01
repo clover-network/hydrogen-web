@@ -58,23 +58,40 @@ export class MediaRepository {
         }
     }
 
+    async doDownloadWithATag(url: string | null) {
+        if (!url) return
+        const urlObj = new URL(url)
+        const newDownloader = document.createElement('a')
+        newDownloader.setAttribute('href', `${urlObj.pathname}`)
+        newDownloader.setAttribute('style', 'display: none')
+        newDownloader.setAttribute('target', '_blank')
+        newDownloader.setAttribute('download', '')
+        document.body.appendChild(newDownloader)
+        newDownloader.click()
+    }
     async downloadEncryptedFile(fileEntry: EncryptedFile, cache: boolean = false): Promise<BlobHandle> {
         const url = this.mxcUrl(fileEntry.url);
-        const {body: encryptedBuffer} = await this._platform.request(url, {method: "GET", format: "buffer", cache}).response();
-        const decryptedBuffer = await decryptAttachment(this._platform, encryptedBuffer, fileEntry);
-        return this._platform.createBlob(decryptedBuffer, fileEntry.mimetype);
+        console.log('Download downloadEncryptedFile:', url)
+        this.doDownloadWithATag(url)
+        // const {body: encryptedBuffer} = await this._platform.request(url, {method: "GET", format: "buffer", cache}).response();
+        // const decryptedBuffer = await decryptAttachment(this._platform, encryptedBuffer, fileEntry);
+        // return this._platform.createBlob(decryptedBuffer, fileEntry.mimetype);
     }
 
     async downloadPlaintextFile(mxcUrl: string, mimetype: string, cache: boolean = false): Promise<BlobHandle> {
         const url = this.mxcUrl(mxcUrl);
-        const {body: buffer} = await this._platform.request(url, {method: "GET", format: "buffer", cache}).response();
-        return this._platform.createBlob(buffer, mimetype);
+        this.doDownloadWithATag(url)
+        // console.log('Download downloadPlaintextFile:', url)
+        // const {body: buffer} = await this._platform.request(url, {method: "GET", format: "buffer", cache}).response();
+        // return this._platform.createBlob(buffer, mimetype);
     }
 
     async downloadAttachment(content: Attachment, cache: boolean = false): Promise<BlobHandle> {
         if (content.file) {
+            console.log('Download sdsadas:', content)
             return this.downloadEncryptedFile(content.file, cache);
         } else {
+            console.log('Download sdsadas 22:', content)
             return this.downloadPlaintextFile(content.url!, content.info?.mimetype, cache);
         }
     }

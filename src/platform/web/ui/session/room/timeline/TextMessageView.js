@@ -20,7 +20,8 @@ import {ReplyPreviewError, ReplyPreviewView} from "./ReplyPreviewView.js";
 
 export class TextMessageView extends BaseMessageView {
     renderMessageBody(t, vm) {
-        const time = t.time({className: {hidden: !vm.date}}, vm.date + " " + vm.time);
+        const time = t.time({ className: { hidden: !vm.time } }, vm.time);
+        const datetime = t.time({ className: { hidden: !vm.date, datetimeAtEnd: true } }, vm.date);
         const container = t.div({
             className: {
                 "Timeline_messageBody": true,
@@ -52,8 +53,12 @@ export class TextMessageView extends BaseMessageView {
             for (const part of body.parts) {
                 container.appendChild(renderPart(part));
             }
+            container.appendChild(datetime);
             container.appendChild(time);
         });
+        if (emojione && emojione?.toImage && vm._format === 'Plain') {
+            container.innerHTML = emojione.toImage(container.innerHTML)
+        }
 
         return container;
     }

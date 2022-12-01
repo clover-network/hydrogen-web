@@ -17,6 +17,7 @@ limitations under the License.
 
 import {TemplateView} from "../../general/TemplateView";
 import {renderStaticAvatar} from "../../avatar";
+import {splitNamePrefix} from "../../../utils/someUtils";
 
 export class InviteView extends TemplateView {
     render(t, vm) {
@@ -46,7 +47,7 @@ export class InviteView extends TemplateView {
                 t.a({className: "button-utility close-middle", href: vm.closeUrl, title: vm.i18n`Close invite`}),
                 renderStaticAvatar(vm, 32),
                 t.div({className: "room-description"}, [
-                    t.h2(vm => vm.name),
+                    t.h2(vm => splitNamePrefix(vm.name)),
                 ]),
             ]),
             t.if(vm => vm.error, t => t.div({className: "RoomView_error"}, vm => vm.error)),

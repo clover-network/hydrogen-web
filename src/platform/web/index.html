@@ -1,34 +1,40 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>Hydrogen Chat</title>
-        <meta name="viewport" content="width=device-width, user-scalable=no">
-        <meta name="application-name" content="Hydrogen Chat"/>
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="black">
-        <meta name="apple-mobile-web-app-title" content="Hydrogen Chat">
-        <meta name="description" content="A matrix chat application">
-        <link rel="apple-touch-icon" href="./assets/icon-maskable.png">
-        <link rel="icon" type="image/png" href="assets/icon-maskable.png">
-        <script type="module"> import "@theme/default"; </script>
-    </head>
-    <body class="hydrogen">
-        <script id="main" type="module">
-            import {main} from "./main";
-            import {Platform} from "./Platform";
-            import configURL from "./assets/config.json?url";
-            import assetPaths from "./sdk/paths/vite";
-            if (import.meta.env.PROD) {
-                assetPaths.serviceWorker = "sw.js";
-            }
-            const platform = new Platform({
-                container: document.body,
-                assetPaths,
-                configURL, 
-                options: {development: import.meta.env.DEV}
-            });
-            main(platform);
-        </script>
-    </body>
+
+<head>
+    <meta charset="utf-8">
+    <title>Hydrogen Chat</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <meta name="application-name" content="Hydrogen Chat" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Hydrogen Chat">
+    <meta name="description" content="A matrix chat application">
+    <link rel="apple-touch-icon" href="./assets/icon-maskable.png">
+    <link rel="icon" type="image/png" href="assets/icon-maskable.png">
+    <script type="module"> import "@theme/default"; </script>
+</head>
+
+<body class="hydrogen">
+<script src="https://cdn.jsdelivr.net/npm/emojione@4.0.0/lib/js/emojione.min.js"
+        onload="emojione.sprites = true"></script>
+<script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
+<script id="main" type="module">
+    import { main } from "./main";
+    import { Platform } from "./Platform";
+    import configURL from "./assets/config.json?url";
+    import assetPaths from "./sdk/paths/vite";
+    if (import.meta.env.PROD) {
+        assetPaths.serviceWorker = "sw.js";
+    }
+    const platform = new Platform({
+        container: document.body,
+        assetPaths,
+        configURL,
+        options: { development: import.meta.env.DEV }
+    });
+    main(platform);
+</script>
+</body>
+
 </html>

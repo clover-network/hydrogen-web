@@ -31,8 +31,8 @@ export class ReplyPreviewView extends TemplateView {
         return t.div(
             { className: "ReplyPreviewView" },
             t.blockquote([
-                t.a({ className: "link", href: vm.permaLink }, "In reply to"),
-                t.a({ className: "pill", href: vm.senderProfileLink }, [
+                t.a({ className: "link" }, "In reply to"),
+                t.a({ className: "pill" }, [
                     renderStaticAvatar(vm, 12, undefined, true),
                     vm.displayName,
                 ]),

@@ -33,13 +33,13 @@
             }
 
             window.addEventListener("message", async function(event) {
-                if (event.origin === window.location.origin) {
+                // if (event.origin === window.location.origin) {
                     if (event.data.type === "downloadBuffer") {
                         await downloadBuffer(event.data.buffer, event.data.mimeType, event.data.filename);
                     } else if (event.data.type === "downloadBlob") {
                         await downloadBlob(event.data.blob, event.data.filename);
                     }
-                }
+                // }
             });
         </script>
     </body>

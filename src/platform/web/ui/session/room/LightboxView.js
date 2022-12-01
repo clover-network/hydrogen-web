@@ -14,12 +14,35 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import {TemplateView} from "../../general/TemplateView";
-import {spinner} from "../../common.js";
+import { TemplateView } from "../../general/TemplateView";
+import { spinner } from "../../common.js";
 
+let draging = false
+let dragingStartX = 0
+let dragingStartY = 0
 export class LightboxView extends TemplateView {
     render(t, vm) {
-        const close = t.a({href: vm.closeUrl, title: vm.i18n`Close`, className: "close"});
+
+        const wheelFunc = (e) => {
+            if (e.deltaY > 0) {
+                zoom += zoomingSpeed
+            } else {
+                zoom -= zoomingSpeed
+            }
+            if (zoom > 3) zoom = 3
+            if (zoom < 0.3) zoom = 0.3
+            image.style.transform = `scale(${(zoom)})`;
+        }
+
+        const close = t.a({
+            href: vm.closeUrl, title: vm.i18n`Close`, className: "close", onClick: () => {
+                document.removeEventListener("wheel", wheelFunc)
+                document.removeEventListener("wheel", wheelFunc)
+                let lightBoxDom = document.getElementById('lightbox-main')
+                lightBoxDom.parentNode.removeChild(lightBoxDom)
+                lightBoxDom = null
+            }
+        });
         const image = t.div({
             role: "img",
             "aria-label": vm => vm.name,
@@ -28,8 +51,53 @@ export class LightboxView extends TemplateView {
                 picture: true,
                 hidden: vm => !vm.imageUrl,
             },
-            style: vm => `background-image: url('${vm.imageUrl}'); max-width: ${vm.imageWidth}px; max-height: ${vm.imageHeight}px;`
+            style: vm => `
+                background-image: url('${vm.imageUrl}'); 
+                max-width: ${vm.imageWidth}px; 
+                max-height: ${vm.imageHeight}px;
+                top:${(vm.imageHeight + 32) > window.innerHeight ? '0' : ((window.innerHeight - vm.imageHeight - 32) / 2) + 'px'};
+                left:${(vm.imageWidth + 32) > window.innerWidth ? '0' : ((window.innerWidth - vm.imageWidth - 32) / 2) + 'px'};
+            `
         });
+        let zoom = 1;
+        const zoomingSpeed = 0.05;
+
+        document.addEventListener("wheel", wheelFunc)
+        const imageContainer = t.div({
+            className: { 'lightbox-image-container': true },
+            ontouchstart: (e) => {
+                draging = true
+                dragingStartX = e.targetTouches[0].clientX - (parseInt(image.style.left) || 0)
+                dragingStartY = e.targetTouches[0].clientY - (parseInt(image.style.top) || 0)
+            },
+            onmousedown: (e) => {
+                draging = true
+                dragingStartX = e.x - (parseInt(image.style.left) || 0)
+                dragingStartY = e.y - (parseInt(image.style.top) || 0)
+            },
+            ontouchmove: (e) => {
+                if (draging) {
+                    image.style.top = `${e.targetTouches[0].clientY - dragingStartY}px`
+                    image.style.left = `${e.targetTouches[0].clientX - dragingStartX}px`
+                }
+            },
+            onmousemove: (e) => {
+                if (draging) {
+                    image.style.top = `${e.y - dragingStartY}px`
+                    image.style.left = `${e.x - dragingStartX}px`
+                }
+            },
+            ontouchend: () => {
+                draging = false
+                dragingStartX = 0
+                dragingStartY = 0
+            },
+            onmouseup: () => {
+                draging = false
+                dragingStartX = 0
+                dragingStartY = 0
+            },
+        }, image)
         const loading = t.div({
             className: {
                 loading: true,
@@ -47,7 +115,7 @@ export class LightboxView extends TemplateView {
             className: "lightbox",
             onClick: evt => this.clickToClose(evt),
             onKeydown: evt => this.closeOnEscKey(evt)
-        }, [image, loading, details, close]);
+        }, [imageContainer, loading, details, close]);
         trapFocus(t, dialog);
         return dialog;
     }
@@ -93,4 +161,3 @@ function trapFocus(t, element) {
 function focusables(element) {
     return element.querySelectorAll('a[href], button, textarea, input, select');
 }
-

@@ -90,7 +90,7 @@ export class RoomView extends TemplateView {
             if (!options.length) {
                 return;
             }
-            this._optionsPopup = new Popup(new Menu(options));
+            this._optionsPopup = new Popup(new Menu(options, 'rv-menu'));
             this._optionsPopup.trackInTemplateView(this);
             this._optionsPopup.showRelativeTo(evt.target, 10);
         }

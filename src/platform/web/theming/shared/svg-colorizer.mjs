@@ -15,8 +15,10 @@ limitations under the License.
 */
 
 export function getColoredSvgString(svgString, primaryColor, secondaryColor) {
-    let coloredSVGCode = svgString.replaceAll("#ff00ff", primaryColor);
-    coloredSVGCode = coloredSVGCode.replaceAll("#00ffff", secondaryColor);
+    // let coloredSVGCode = svgString.replaceAll("#ff00ff", primaryColor);
+    // coloredSVGCode = coloredSVGCode.replaceAll("#00ffff", secondaryColor);
+    let coloredSVGCode = svgString.replace(/#ff00ff/g, primaryColor);
+    coloredSVGCode = coloredSVGCode.replace(/#ff00ff/g, secondaryColor);
     if (svgString === coloredSVGCode) {
         throw new Error("svg-colorizer made no color replacements! The input svg should only contain colors #ff00ff (primary, case-sensitive) and #00ffff (secondary, case-sensitive).");
     }

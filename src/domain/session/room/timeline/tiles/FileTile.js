@@ -27,6 +27,7 @@ export class FileTile extends BaseMessageTile {
     }
 
     async download() {
+        console.log('Download start')
         if (this._downloading || this.isPending) {
             return;
         }
@@ -36,17 +37,54 @@ export class FileTile extends BaseMessageTile {
         this.emitChange("label");
         let blob;
         try {
+            console.log('Download start:', content)
             blob = await this._mediaRepository.downloadAttachment(content);
-            this.platform.saveFileAs(blob, filename);
+            // this.platform.saveFileAs(blob, filename);
         } catch (err) {
+            console.log('Download err:', err)
             this._downloadError = err;
         } finally {
+            console.log('Download finally:')
             blob?.dispose();
             this._downloading = false;
         }
         this.emitChange("label");
     }
 
+    get filename() {
+        const content = this._getContent();
+        return content.body;
+    }
+    get filesize() {
+        const size = formatSize(this._getContent().info?.size);
+        return size;
+    }
+    get filestatus() {
+        if (this._entry.isPending) {
+            switch (pendingEvent?.status) {
+                case SendStatus.Waiting:
+                    return this.i18n`Waiting to send`;
+                case SendStatus.EncryptingAttachments:
+                case SendStatus.Encrypting:
+                    return this.i18n`Encrypting`;
+                case SendStatus.UploadingAttachments:{
+                    return this.i18n`Uploading`;
+                }
+                case SendStatus.Sending:
+                case SendStatus.Sent:
+                    return this.i18n`Sending`;
+                case SendStatus.Error:
+                    return this.i18n`Error: could not send`;
+                default:
+                    return `Unknown status`;
+            }
+        } else {
+            if (this._downloading) {
+                return this.i18n`Downloading`;
+            }
+        }
+        return this.i18n`Download`;
+    }
     get label() {
         if (this._downloadError) {
             return `Could not download file: ${this._downloadError.message}`;
@@ -80,7 +118,7 @@ export class FileTile extends BaseMessageTile {
                 return this.i18n`Downloading ${filename} (${size})…`;
             } else {
                 return this.i18n`Download ${filename} (${size})`;
-            }   
+            }
         }
     }
 

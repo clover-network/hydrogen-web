@@ -15,7 +15,7 @@ const pathsToExport = [
 
 export default mergeOptions(commonOptions, {
     root: "src/",
-    base: "./",
+    base: "/css/",
     build: {
         outDir: "../target/asset-build/",
         rollupOptions: {

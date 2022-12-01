@@ -40,7 +40,7 @@ export class Profile implements IProfile {
         public readonly avatarUrl: string | undefined
     ) {}
 
-    get name() { return this.displayName || this.userId; }
+    get name() { return this.displayName || 'loading...'; }
 }
 
 export class UserIdProfile implements IProfile {

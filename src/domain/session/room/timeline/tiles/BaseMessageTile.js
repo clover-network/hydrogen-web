@@ -23,10 +23,13 @@ export class BaseMessageTile extends SimpleTile {
         super(entry, options);
         this._date = this._entry.timestamp ? new Date(this._entry.timestamp) : null;
         this._isContinuation = false;
+        this._isSameDay = false;
         this._reactions = null;
+        this._threadAnchor = null;
         this._replyTile = null;
         if (this._entry.annotations || this._entry.pendingAnnotations) {
             this._updateReactions();
+            this._updateThreadAnchor();
         }
         this._updateReplyTileIfNeeded(undefined);
     }
@@ -79,7 +82,7 @@ export class BaseMessageTile extends SimpleTile {
     }
 
     get date() {
-        return this._date && this._date.toLocaleDateString({}, {month: "numeric", day: "numeric"});
+        return this._date && this._date.toLocaleDateString('en-US', { year: 'numeric', month: "long", day: "numeric" }).split('/').join('-');
     }
 
     get time() {
@@ -92,6 +95,10 @@ export class BaseMessageTile extends SimpleTile {
 
     get isContinuation() {
         return this._isContinuation;
+    }
+
+    get isSameDay() {
+        return this._isSameDay;
     }
 
     get isUnverified() {
@@ -120,12 +127,17 @@ export class BaseMessageTile extends SimpleTile {
             this._isContinuation = isContinuation;
             this.emitChange("isContinuation");
         }
+        if (prev && (prev instanceof BaseMessageTile) && prev.date === this.date) {
+            this._isSameDay = true;
+            this.emitChange("isSameDay");
+        }
     }
 
     updateEntry(entry, param) {
         const action = super.updateEntry(entry, param);
         if (action.shouldUpdate) {
             this._updateReactions();
+            this._updateThreadAnchor();
         }
         this._updateReplyTileIfNeeded(param);
         return action;
@@ -169,6 +181,13 @@ export class BaseMessageTile extends SimpleTile {
     get reactions() {
         if (this.shape !== "redacted") {
             return this._reactions;
+        }
+        return null;
+    }
+
+    get threadAnchor() {
+        if (this.shape !== "redacted") {
+            return this._threadAnchor;
         }
         return null;
     }
@@ -240,6 +259,15 @@ export class BaseMessageTile extends SimpleTile {
                 this._reactions = new ReactionsViewModel(this);
             }
             this._reactions.update(annotations, pendingAnnotations);
+        }
+    }
+
+    _updateThreadAnchor() {
+        const { annotations } = this._entry;
+        if (!annotations) return
+        const threadKey = Object.keys(annotations).find(k => k.startsWith('thrd'))
+        if (threadKey) {
+            this._threadAnchor = threadKey;
         }
     }
 

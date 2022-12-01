@@ -14,16 +14,50 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import {BaseMediaView} from "./BaseMediaView.js";
+import { BaseMediaView } from "./BaseMediaView.js";
+import { LightboxViewModel } from "../../../../../../domain/session/room/LightboxViewModel.js";
+import { LightboxView } from "../../room/LightboxView.js";
+import pic from "../../../css/themes/element/icons/default-banner.svg";
 
 export class ImageView extends BaseMediaView {
     renderMedia(t, vm) {
         const img = t.img({
             src: vm => vm.thumbnailUrl,
-            alt: vm => vm.label,
+            alt: vm => {
+                if (vm.label.length > 20) {
+                    return vm.label.substring(0, 20) + '...'
+                }
+                return vm.label
+            },
+            onload: () => {
+                img.style.backgroundImage = 'unset'
+                img.style.minHeight = 'unset'
+                img.style.minWidth = 'unset'
+            },
             title: vm => vm.label,
-            style: `max-width: ${vm.width}px; max-height: ${vm.height}px;`
+            style: `max-width: ${vm.width}px; max-height: ${vm.height}px;
+            min-width: 100px;
+            color: #eee;
+            font-size: 14px;
+            min-height: auto;
+            background-image:url(${pic});
+            background-repeat: no-repeat;
+            background-size: contain;`,
+            onClick: () => {
+                if (window.lightBoxVM) {
+                    window.lightBoxVM = null
+                }
+                if (window.lightBoxView) {
+                    window.lightBoxView = null
+                }
+                window.lightBoxVM = new LightboxViewModel(Object.assign({}, vm._options, { eventId: vm._entry.id, room: vm._options.room }))
+                window.lightBoxView = new LightboxView(window.lightBoxVM)
+                const med = window.lightBoxView.mount()
+                med.setAttribute('id', 'lightbox-main')
+                document.body.appendChild(med)
+            }
         });
-        return vm.isPending || !vm.lightboxUrl ? img : t.a({href: vm.lightboxUrl}, img);
+        return img;
+        // return vm.isPending || !vm.lightboxUrl ? img : t.a({ href: vm.lightboxUrl }, img);
     }
 }

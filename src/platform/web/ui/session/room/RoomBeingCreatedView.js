@@ -18,6 +18,7 @@ limitations under the License.
 import {TemplateView} from "../../general/TemplateView";
 import {LoadingView} from "../../general/LoadingView";
 import {AvatarView} from "../../AvatarView";
+import {splitNamePrefix} from "../../../utils/someUtils";
 
 export class RoomBeingCreatedView extends TemplateView {
     render(t, vm) {
@@ -26,7 +27,7 @@ export class RoomBeingCreatedView extends TemplateView {
                 t.a({className: "button-utility close-middle", href: vm.closeUrl, title: vm.i18n`Close room`}),
                 t.view(new AvatarView(vm, 32)),
                 t.div({className: "room-description"}, [
-                    t.h2(vm => vm.name),
+                    t.h2(vm => splitNamePrefix(vm.name)),
                 ])
             ]),
             t.div({className: "RoomView_body"}, [

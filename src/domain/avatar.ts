@@ -53,8 +53,12 @@ export function getIdentifierColorNumber(id: string): number {
 
 export function getAvatarHttpUrl(avatarUrl: string, cssSize: number, platform: Platform, mediaRepository: MediaRepository): string | null {
     if (avatarUrl) {
-        const imageSize = cssSize * platform.devicePixelRatio;
-        return mediaRepository.mxcUrlThumbnail(avatarUrl, imageSize, imageSize, "crop");
+        if (avatarUrl.startsWith('mxc://')) {
+            const imageSize = cssSize * platform.devicePixelRatio;
+            return mediaRepository.mxcUrlThumbnail(avatarUrl, imageSize, imageSize, "crop");
+        } else if (avatarUrl.startsWith('http')) {
+            return avatarUrl
+        }
     }
     return null;
 }

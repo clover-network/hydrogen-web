@@ -172,12 +172,17 @@ a {
 }
 
 .AnnouncementView {
-    margin: 5px 0;
-    padding: 5px 10%;
+    /* margin: 5px 0;
+    padding: 5px 10%; */
+    position: relative;
+    margin: 0;
+    padding: 0;
+    width: 100%;
 }
 
-.AnnouncementView > div {
-    margin: 0 auto;
+.AnnouncementView .AnnouncementView_inner {
+    /* margin: 0 auto; */
+    margin-left: 12px;
     padding: 10px 20px;
     background-color: #333;
     font-size: 0.9em;

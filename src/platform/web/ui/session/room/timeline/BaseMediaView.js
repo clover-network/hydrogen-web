@@ -14,12 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import {BaseMessageView} from "./BaseMessageView.js";
-import {Menu} from "../../../general/Menu.js";
+import { BaseMessageView } from "./BaseMessageView.js";
+import { Menu } from "../../../general/Menu.js";
 
 export class BaseMediaView extends BaseMessageView {
     renderMessageBody(t, vm) {
-        const heightRatioPercent = (vm.height / vm.width) * 100; 
+        const heightRatioPercent = (vm.height / vm.width) * 100;
         let spacerStyle = `padding-top: ${heightRatioPercent}%;`;
         if (vm.platform.isIE11) {
             // preserving aspect-ratio in a grid with padding percentages
@@ -31,10 +31,13 @@ export class BaseMediaView extends BaseMessageView {
             // can slow down rendering, and was bleeding through the lightbox.
             spacerStyle = `height: ${vm.height}px`;
         }
+        const dateTime = t.span({ className: { hidden: !vm.date, datetimeAtEnd: true } }, vm.date);
+        const time = t.span(vm.time);
+        const timeContainer = t.time({}, [dateTime, ' ', time])
         const children = [
-            t.div({className: "spacer", style: spacerStyle}),
+            t.div({ className: "spacer", style: spacerStyle }),
             this.renderMedia(t, vm),
-            t.time(vm.date + " " + vm.time),
+            timeContainer
         ];
         const status = t.div({
             className: {
@@ -48,13 +51,13 @@ export class BaseMediaView extends BaseMessageView {
                 min: 0,
                 max: 100,
                 value: vm => vm.uploadPercentage,
-                className: {hidden: vm => !vm.isUploading}
+                className: { hidden: vm => !vm.isUploading }
             });
             children.push(progress);
         }
-        return t.div({className: "Timeline_messageBody"}, [
-            t.div({className: "media", style: `max-width: ${vm.width}px`, "data-testid": "media"}, children),
-            t.if(vm => vm.error, t => t.p({className: "error"}, vm.error))
+        return t.div({ className: "Timeline_messageBody" }, [
+            t.div({ className: "media", style: `max-width: ${vm.width}px`, "data-testid": "media" }, children),
+            t.if(vm => vm.error, t => t.p({ className: "error" }, vm.error))
         ]);
     }
 

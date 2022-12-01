@@ -16,37 +16,139 @@ limitations under the License.
 */
 
 .Timeline_jumpDown {
-    width: 40px;
-    height: 40px;
-    bottom: 16px;
+    width: 56px;
+    height: 56px;
+    bottom: 100px;
     right: 32px;
     border-radius: 100%;
-    border: 1px solid var(--background-color-secondary--darker-7);
+    border: none;
     background-image: url("./icons/chevron-down.svg?primary=icon-color");
+    box-shadow: 0px 4px 2px rgba(147, 142, 166, 0.11);
     background-position: center;
-    background-color: var(--background-color-primary--darker-10);
+    background-color: #fff;
     background-repeat: no-repeat;
     cursor: pointer;
+}
+
+.ReplyPreviewView .Timeline_message {
+    max-width: 100%;
 }
 
 .Timeline_message {
     display: grid;
     grid-template:
+        "dtime dtime" auto
         "avatar sender" auto
         "avatar body" auto
         "time   body" 1fr
         "time   reactions" auto /
-         30px   1fr;
-    column-gap: 8px;
+        50px 1fr;
+    column-gap: 10px;
     padding: 4px;
-    margin: 0 12px;
-    /* TODO: check whether this is needed for .media to maintain aspect ratio (on IE11) like the 100% above */
-    /* width: 100%; */
+    max-width: 60%;
     box-sizing: border-box;
+    margin-top: 12px;
+    margin-bottom: 0px;
+    margin-right: auto;
+    margin-left: 0px;
+    width: fit-content;
+    position: relative;
+}
+
+.Timeline_message.newDay:not(.continuation):not(.disabled) {
+    margin-top: 72px !important;
+    margin-bottom: 0px;
+}
+
+.Timeline_message.haveThread {
+    margin-bottom: 28px !important;
+}
+
+.ReplyPreviewView .Timeline_message.haveThread,
+.MessageComposer_replyPreview .Timeline_message.haveThread {
+    margin-bottom: 0px !important;
+}
+
+.ReplyPreviewView .thread-label,
+.MessageComposer_replyPreview .thread-label {
+    display: none;
+}
+
+.Timeline_message .thread-label {
+    position: absolute;
+    bottom: -20px;
+    left: 72px;
+    font-size: 11px;
+    line-height: 14px;
+    cursor: pointer;
+    color: #FB6320;
+    user-select: none;
+}
+
+.ReplyPreviewView .Timeline_message.newDay {
+    margin-top: 8px !important;
+    margin-bottom: 0px;
+}
+
+.Timeline_message.own {
+    margin-left: auto;
+    margin-right: 20px;
+}
+
+.Timeline_message .datetimeAtEnd {
+    display: none;
+}
+
+.Timeline_message .ReplyPreviewView .datetimeAtEnd {
+    display: inline-block;
+}
+
+.Timeline_message.own .Timeline_messageSender {
+    display: none;
+}
+
+.Timeline_message.own .Timeline_messageAvatar {
+    display: none;
+}
+
+.ReplyPreviewView .timeTitle,
+.continuation .timeTitle {
+    display: none !important;
+}
+
+.Timeline_message.own {
+    /* text-align: right; */
+}
+
+.Timeline_message .timeTitle {
+    grid-area: dtime;
+    display: none;
+}
+
+.newDay .timeTitle {
+    display: flex;
+    grid-area: dtime;
+    position: absolute;
+    left: 50%;
+    top: -52px;
+    width: 300px;
+}
+
+.AnnouncementView .timeTitle {
+    position: absolute;
+    top: -30px;
+}
+
+.AnnouncementView.showTime .timeTitle {
+    display: block;
+}
+
+.AnnouncementView .timeTitle {
+    display: none;
 }
 
 .Timeline_message:not(.continuation) {
-    margin-top: 4px;
+    margin-top: 8px;
 }
 
 .ReplyPreviewView .Timeline_message {
@@ -60,37 +162,49 @@ limitations under the License.
     margin-top: 0;
 }
 
-@media screen and (max-width: 800px) {
+/* @media screen and (max-width: 800px) {
     .Timeline_message {
         grid-template:
             "avatar    sender" auto
             "body      body" 1fr
             "time      time" auto
             "reactions reactions" auto /
-             30px 1fr;
+            48px 1fr;
     }
 
     .Timeline_messageSender {
         margin-top: 0 !important;
         align-self: center;
     }
-}
+} */
 
-.Timeline_message:hover:not(.disabled), .Timeline_message.selected, .Timeline_message.menuOpen {
+.Timeline_message:hover:not(.disabled),
+.Timeline_message.selected,
+.Timeline_message.menuOpen {
     /* needs transparency support */
     background-color: rgba(141, 151, 165, 0.1);
     border-radius: 4px;
 }
 
-.Timeline_message:hover > .Timeline_messageOptions,
-.Timeline_message.menuOpen > .Timeline_messageOptions {
+.Timeline_message:hover>.Timeline_messageOptions,
+.Timeline_message.menuOpen>.Timeline_messageOptions {
+    display: block;
+    user-select: none;
+}
+
+.Timeline_message:hover>.Timeline_messageOptions2,
+.Timeline_message.menuOpen>.Timeline_messageOptions2 {
     display: block;
     user-select: none;
 }
 
 .Timeline_messageAvatar {
     grid-area: avatar;
+    cursor: pointer;
     text-decoration: none;
+    width: 40px;
+    height: 40px;
+    display: none;
 }
 
 .Timeline_messageSender {
@@ -99,17 +213,76 @@ limitations under the License.
     line-height: 1.7rem;
 }
 
-.Timeline_messageSender, .Timeline_messageBody {
+.Timeline_messageSender,
+.Timeline_messageBody {
     /* reset body margin */
     margin: 0;
     /* first try break-all, then break-word, which isn't supported everywhere */
-    word-break: break-all;  
+    word-break: break-all;
     word-break: break-word;
 }
 
 .Timeline_message:not(.continuation) .Timeline_messageSender,
-.Timeline_message:not(.continuation) .Timeline_messageBody {
+.Timeline_message .Timeline_messageBody {
     margin-top: 4px;
+}
+
+.Timeline_messageOptions3 {
+    position: absolute;
+    right: 8px;
+    top: 4px;
+    width: 16px;
+    height: 16px;
+    background-image: url('icons/arrow-ios-down.svg');
+    background-color: transparent;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.Timeline_messageOptions2 {
+    display: none;
+    grid-area: body;
+    align-self: start;
+    justify-self: end;
+    margin-top: -32px;
+    margin-right: 4px;
+    /* button visuals */
+    border: var(--background-color-primary--darker-10) 1px solid;
+    height: 40px;
+    width: auto;
+    background-color: var(--background-color-primary);
+    color: inherit;
+    border-radius: 0px;
+    padding: 0;
+    text-align: center;
+    line-height: 22px;
+    cursor: pointer;
+}
+
+.Timeline_messageOptions2 .hover-btn {
+    background-color: var(--icon-background);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+}
+
+.Timeline_messageOptions2 .emoji {
+    background-image: url('icons/smile.svg?primary=icon-color');
+}
+
+.Timeline_messageOptions2 .reply {
+    background-image: url('icons/reply.svg?primary=icon-color');
+}
+
+.Timeline_messageOptions2 .thread {
+    background-image: url('icons/hash.svg?primary=icon-color');
+}
+
+.Timeline_messageOptions2 .more {
+    background-image: url('icons/more.svg?primary=icon-color');
 }
 
 .Timeline_messageOptions {
@@ -141,7 +314,8 @@ limitations under the License.
     user-select: none;
 }
 
-.Timeline_messageBody time, .Timeline_messageTime {
+.Timeline_messageBody time,
+.Timeline_messageTime {
     font-size: 0.8em;
     line-height: normal;
     color: var(--timeline-time-text-color);
@@ -154,21 +328,76 @@ limitations under the License.
 
 .Timeline_messageBody {
     grid-area: body;
-    line-height: 2.2rem;
+    /* line-height: 2.2rem; */
     /* so the .media can grow horizontally and its spacer can grow vertically */
     width: 100%;
     /* Fix for pre overflow */
     min-width: 0;
 }
 
-.hydrogen .Timeline_messageSender.usercolor1 { color: var(--usercolor1); }
-.hydrogen .Timeline_messageSender.usercolor2 { color: var(--usercolor2); }
-.hydrogen .Timeline_messageSender.usercolor3 { color: var(--usercolor3); }
-.hydrogen .Timeline_messageSender.usercolor4 { color: var(--usercolor4); }
-.hydrogen .Timeline_messageSender.usercolor5 { color: var(--usercolor5); }
-.hydrogen .Timeline_messageSender.usercolor6 { color: var(--usercolor6); }
-.hydrogen .Timeline_messageSender.usercolor7 { color: var(--usercolor7); }
-.hydrogen .Timeline_messageSender.usercolor8 { color: var(--usercolor8); }
+.hydrogen .AnnouncementView .usercolor1 {
+    color: var(--usercolor1);
+}
+
+.hydrogen .AnnouncementView .usercolor2 {
+    color: var(--usercolor2);
+}
+
+.hydrogen .AnnouncementView .usercolor3 {
+    color: var(--usercolor3);
+}
+
+.hydrogen .AnnouncementView .usercolor4 {
+    color: var(--usercolor4);
+}
+
+.hydrogen .AnnouncementView .usercolor5 {
+    color: var(--usercolor5);
+}
+
+.hydrogen .AnnouncementView .usercolor6 {
+    color: var(--usercolor6);
+}
+
+.hydrogen .AnnouncementView .usercolor7 {
+    color: var(--usercolor7);
+}
+
+.hydrogen .AnnouncementView .usercolor8 {
+    color: var(--usercolor8);
+}
+
+.hydrogen .Timeline_messageSender.usercolor1 {
+    color: var(--usercolor1);
+}
+
+.hydrogen .Timeline_messageSender.usercolor2 {
+    color: var(--usercolor2);
+}
+
+.hydrogen .Timeline_messageSender.usercolor3 {
+    color: var(--usercolor3);
+}
+
+.hydrogen .Timeline_messageSender.usercolor4 {
+    color: var(--usercolor4);
+}
+
+.hydrogen .Timeline_messageSender.usercolor5 {
+    color: var(--usercolor5);
+}
+
+.hydrogen .Timeline_messageSender.usercolor6 {
+    color: var(--usercolor6);
+}
+
+.hydrogen .Timeline_messageSender.usercolor7 {
+    color: var(--usercolor7);
+}
+
+.hydrogen .Timeline_messageSender.usercolor8 {
+    color: var(--usercolor8);
+}
 
 .Timeline_messageBody h1,
 .Timeline_messageBody h2,
@@ -180,12 +409,29 @@ limitations under the License.
     margin: 0.7em 0;
 }
 
-.Timeline_messageBody h1 { font-size: 1.6em; }
-.Timeline_messageBody h2 { font-size: 1.5em; }
-.Timeline_messageBody h3 { font-size: 1.4em; }
-.Timeline_messageBody h4 { font-size: 1.3em; }
-.Timeline_messageBody h5 { font-size: 1.2em; }
-.Timeline_messageBody h6 { font-size: 1.1em; }
+.Timeline_messageBody h1 {
+    font-size: 1.6em;
+}
+
+.Timeline_messageBody h2 {
+    font-size: 1.5em;
+}
+
+.Timeline_messageBody h3 {
+    font-size: 1.4em;
+}
+
+.Timeline_messageBody h4 {
+    font-size: 1.3em;
+}
+
+.Timeline_messageBody h5 {
+    font-size: 1.2em;
+}
+
+.Timeline_messageBody h6 {
+    font-size: 1.1em;
+}
 
 .Timeline_messageBody a {
     word-break: break-all;
@@ -202,7 +448,7 @@ limitations under the License.
     width: 100%;
 }
 
-.Timeline_messageBody .media > a {
+.Timeline_messageBody .media>a {
     text-decoration: none;
     width: 100%;
     display: block;
@@ -210,12 +456,13 @@ limitations under the License.
 
 /* .spacer grows with an inline padding-top to the size of the image,
 so the timeline doesn't jump when the image loads */
-.Timeline_messageBody .media > * {
+.Timeline_messageBody .media>* {
     grid-row: 1;
     grid-column: 1;
 }
 
-.Timeline_messageBody .media img, .Timeline_messageBody .media video {
+.Timeline_messageBody .media img,
+.Timeline_messageBody .media video {
     width: 100%;
     height: auto;
     /* for IE11 to still scale even though the spacer is too tall */
@@ -233,25 +480,25 @@ only loads when the top comes into view*/
     align-self: stretch;
 }
 
-.Timeline_messageBody .media > .status {
+.Timeline_messageBody .media>.status {
     align-self: end;
     justify-self: start;
     font-size: 0.8em;
 }
 
-.Timeline_messageBody .media > progress {
+.Timeline_messageBody .media>progress {
     align-self: center;
     justify-self: center;
     width: 75%;
 }
 
-.Timeline_messageBody .media > time {
+.Timeline_messageBody .media>time {
     align-self: end;
     justify-self: end;
 }
 
-.Timeline_messageBody .media > time,
-.Timeline_messageBody .media > .status {
+.Timeline_messageBody .media>time,
+.Timeline_messageBody .media>.status {
     color: var(--text-color);
     display: block;
     padding: 2px;
@@ -261,14 +508,15 @@ only loads when the top comes into view*/
     border-radius: 4px;
 }
 
-.Timeline_messageBody .media > .spacer {
+.Timeline_messageBody .media>.spacer {
     /* TODO: can we implement this with a pseudo element? or perhaps they are not grid items? */
     width: 100%;
     /* don't stretch height as it is a spacer, just in case it doesn't match with image height */
     align-self: start;
 }
 
-.Timeline_messageBody code, .Timeline_messageBody pre {
+.Timeline_messageBody code,
+.Timeline_messageBody pre {
     background-color: var(--background-color-secondary);
     font-family: monospace;
     font-size: 0.9em;
@@ -310,7 +558,8 @@ only loads when the top comes into view*/
     border-bottom: 1px solid var(--background-color-secondary--darker-15);
 }
 
-.Timeline_messageBody td, .Timeline_messageBody th {
+.Timeline_messageBody td,
+.Timeline_messageBody th {
     padding: 2px 5px 2px 5px;
 }
 
@@ -399,19 +648,52 @@ only loads when the top comes into view*/
 }
 
 .AnnouncementView {
-    margin: 5px 0;
-    padding: 5px 10%;
+    /* margin: 5px 0;
+    padding: 5px 10%; */
+    position: relative;
+    margin: 0;
+    padding: 0;
+    width: 100%;
 }
 
-.AnnouncementView > div {
-    margin: 0 auto;
-    padding: 10px 20px;
+.AnnouncementView .AnnouncementView_inner .AnnouncementView_inner_below {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.AnnouncementView .AnnouncementView_inner .AnnouncementView_inner_upper {
+    display: flex;
+    flex-direction: row;
+    font-size: 12px;
+    line-height: 16px;
+}
+
+.AnnouncementView .AnnouncementView_inner .AnnouncementView_inner_upper .AnnouncementView_inner_upper_img {
+    width: 16px;
+    height: 16px;
+    background-position: center;
+    margin-right: 8px;
+    background-repeat: no-repeat;
+    background-image: url('icons/arrow-right.svg');
+    background-size: cover;
+}
+
+.AnnouncementView .AnnouncementView_inner {
+    margin-left: 12px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    padding: 4px 8px;
     background-color: var(--background-color-secondary);
     text-align: center;
     border-radius: 10px;
 }
 
-.GapView > :not(:first-child) {
+.AnnouncementView.showTime {
+    margin-top: 42px;
+}
+
+.GapView> :not(:first-child) {
     margin-left: 12px;
 }
 
@@ -421,4 +703,96 @@ only loads when the top comes into view*/
 
 .GapView.isAtTop {
     padding: 52px 20px 12px 20px;
+}
+
+.file-message .file-card {
+    height: 48px;
+    padding: 0 16px 0 8px;
+    width: 300px;
+    max-width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+}
+
+.file-message .file-card .file-card-image {
+    width: 40px;
+    height: 40px;
+    margin-right: 8px;
+    background-image: url('icons/file-card.svg?primary=icon-color');
+    background-size: contain;
+}
+
+.file-message .file-card .file-card-txt {
+    flex: 1;
+    height: 32px;
+    display: flex;
+    flex-direction: column;
+    padding-top: 4px;
+    padding-bottom: 10px;
+    position: relative;
+    display: inline-block;
+}
+
+.file-message .file-card .file-card-txt:hover .file-card-tooltip {
+    visibility: visible;
+}
+
+.file-message .file-card .file-card-txt .file-card-tooltip {
+    visibility: hidden;
+    width: 320px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 6px 12px;
+    font-size: 12px;
+    line-height: 16px;
+    border-radius: 6px;
+    position: absolute;
+    right: 0;
+    bottom: 60px;
+    z-index: 1;
+}
+
+.file-message .file-card .file-card-txt .file-card-content {
+    font-size: 12px;
+    height: 16px;
+    line-height: 16px;
+}
+
+.bottom-menu li.icon {
+    background-color: var(--icon-background);
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: left 8% center;
+    width: 155px;
+    height: auto;
+    margin-bottom: 0;
+    padding-left: 12px;
+    padding-right: 12px;
+    border-bottom: 1px solid rgba(207, 217, 232, 0.2);
+}
+
+.bottom-menu li.icon:last-of-type {
+    border-bottom: none;
+}
+
+.bottom-menu li.icon .menu-item {
+    height: 40px;
+    padding: 0 0 0 32px;
+    font-size: 12px;
+    line-height: 16px;
+}
+
+.bottom-menu li.icon.picture {
+    background-image: url("./icons/image.svg?primary=icon-color");
+}
+
+.bottom-menu li.icon.file {
+    background-image: url("./icons/file.svg?primary=icon-color");
+}
+
+.bottom-menu li.icon.token {
+    background-image: url("./icons/token.svg?primary=icon-color");
 }
