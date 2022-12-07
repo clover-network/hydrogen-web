@@ -102,8 +102,7 @@ limitations under the License.
 .Timeline_message .ReplyPreviewView .datetimeAtEnd {
     display: inline-block;
 }
-
-.Timeline_message.own .Timeline_messageSender {
+li .Timeline_messageSender {
     display: none;
 }
 

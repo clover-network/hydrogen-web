@@ -51,12 +51,38 @@ limitations under the License.
 }
 
 .MessageComposer_replyPreview {
-    display: grid;
-    grid-template-columns: 1fr auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .MessageComposer_replyPreview .Timeline_message {
-    grid-column: 1/-1;
+    /*grid-column: 1/-1;*/
+}
+
+.MessageComposer_replyPreview time {
+    display: none !important;
+}
+
+.MessageComposer_replyPreview .reply_icon {
+    background-image: url('icons/reply-icon.svg?primary=icon-color');
+    background-repeat: no-repeat;
+    background-position: 0 50%;
+    width: 24px;
+    height: 24px;
+    padding-right: 16px;
+    margin: 0 16px;
+}
+
+.MessageComposer_replyPreview .Timeline_message {
+    margin-top: 0 !important;
+    grid-template:
+        "dtime dtime" auto
+        "avatar sender" auto
+        "avatar body" auto
+        "time body" 1fr
+        "time reactions" auto / 0px 1fr;
+    border-left: 1px solid rgba(34, 34, 34, 0.1);
 }
 
 .MessageComposer_input {
@@ -65,7 +91,7 @@ limitations under the License.
     background-color: var(--background-color-secondary);
 }
 
-.MessageComposer_input>input {
+.MessageComposer_input > input {
     display: block;
     flex: 1;
     min-width: 0;
@@ -84,6 +110,6 @@ limitations under the License.
     justify-content: center;
 }
 
-.TimelineLoadingView> :not(:first-child) {
+.TimelineLoadingView > :not(:first-child) {
     margin-left: 12px;
 }

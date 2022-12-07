@@ -637,6 +637,7 @@ a {
     flex-direction: row;
     align-items: center;
     font-weight: bold;
+    display: none;
 }
 
 .MessageComposer_replyPreview>button.cancel {

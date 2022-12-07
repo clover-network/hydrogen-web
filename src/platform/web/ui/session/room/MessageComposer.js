@@ -52,12 +52,16 @@ export class MessageComposer extends TemplateView {
             return t.div({
                 className: "MessageComposer_replyPreview"
             }, [
-                t.span({ className: "replying" }, "Replying"),
+                // t.span({ className: "replying" }, "Replying"),
+                t.div({ className: "reply_icon" }),
+                // t.img({
+                //     src: vm => vm.thumbnailUrl,
+                // }),
+                t.view(new TileView(rvm, this._viewClassForTile, { interactive: false }, "div")),
                 t.button({
                     className: "cancel",
                     onClick: () => this._clearReplyingTo()
                 }, "Close"),
-                t.view(new TileView(rvm, this._viewClassForTile, { interactive: false }, "div"))
             ]);
         });
         const input = t.div({ className: "MessageComposer_input" }, [

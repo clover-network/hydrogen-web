@@ -154,7 +154,7 @@ export class BaseMessageView extends TemplateView {
         //     options.push(Menu.option(vm.i18n`Message user`, () => { }).setIcon('msg-menu-more-msg').setData(`${vm.sender}`));
         // }
         options.push(Menu.option(vm.i18n`Reply`, () => vm.startReply()).setIcon('msg-menu-more-reply'));
-        options.push(Menu.option(vm.i18n`Forward`, () => { }).setIcon('msg-menu-more-forward'));
+        options.push(Menu.option(vm.i18n`Forward`, () => { console.log(vm)}).setIcon('msg-menu-more-forward').setData(`${vm.sender}`));
         // options.push(Menu.option(vm.i18n`Add reaction`, () => this._toggleEmojiMenu(button, vm)).setIcon('msg-menu-more-emoji'));
         // if (!vm.threadAnchor) {
         //     options.push(Menu.option(vm.i18n`Create thread`, (e) => {

@@ -59,7 +59,7 @@ export function createReplyContent(entry, msgtype, body) {
 
     const formattedBody = nonTextual || entry.content.formatted_body ||
         (entry.content.body && htmlEscape(entry.content.body)) || "";
-    const formattedFallback = `<mx-reply><blockquote>In reply to ${prefix}` +
+    const formattedFallback = `<mx-reply><blockquote>` +
         `<a href="https://matrix.to/#/${sender}">${name}</a><br />` +
         `${formattedBody}</blockquote></mx-reply>`;
 
