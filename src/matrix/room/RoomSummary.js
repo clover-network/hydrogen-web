@@ -149,6 +149,8 @@ function processTimelineEvent(data, eventEntry, isInitialSync, canMarkUnread, ow
         if (!data.lastMessageTimestamp || eventEntry.timestamp > data.lastMessageTimestamp) {
             data = data.cloneIfNeeded();
             data.lastMessageTimestamp = eventEntry.timestamp;
+            data.lastMessageContent = eventEntry.content?.body || '';
+            data.lastMessageContent = data.lastMessageContent.substring(data.lastMessageContent.lastIndexOf('\n\n'))
         }
         if (!isInitialSync && eventEntry.sender !== ownUserId && canMarkUnread) {
             data = data.cloneIfNeeded();
