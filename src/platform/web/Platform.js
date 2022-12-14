@@ -40,15 +40,15 @@ import {parseHTML} from "./parsehtml.js";
 import {handleAvatarError} from "./ui/avatar";
 import {ThemeLoader} from "./theming/ThemeLoader";
 
-function addScript(src) {
-    return new Promise(function (resolve, reject) {
-        var s = document.createElement("script");
-        s.setAttribute("src", src );
-        s.onload=resolve;
-        s.onerror=reject;
-        document.body.appendChild(s);
-    });
-}
+// function addScript(src) {
+//     return new Promise(function (resolve, reject) {
+//         var s = document.createElement("script");
+//         s.setAttribute("src", src );
+//         s.onload=resolve;
+//         s.onerror=reject;
+//         document.body.appendChild(s);
+//     });
+// }
 
 async function loadOlm(olmPaths) {
     // make crypto.getRandomValues available without
@@ -58,10 +58,10 @@ async function loadOlm(olmPaths) {
     }
     if (olmPaths) {
         if (window.WebAssembly) {
-            await addScript(olmPaths.wasmBundle);
+            // await addScript(olmPaths.wasmBundle);
             await window.Olm.init({locateFile: () => olmPaths.wasm});
         } else {
-            await addScript(olmPaths.legacyBundle);
+            // await addScript(olmPaths.legacyBundle);
             await window.Olm.init();
         }
         return window.Olm;
