@@ -65,6 +65,11 @@ export class MessageComposer extends TemplateView {
             ]);
         });
         const input = t.div({ className: "MessageComposer_input" }, [
+            t.button({
+                className: "transfer",
+                title: vm.i18n`transfer`,
+                onClick: evt => {},
+            }, vm.i18n`transfer`),
             // t.button({
             //     className: "sendFile",
             //     title: vm.i18n`Pick attachment`,

@@ -721,6 +721,20 @@ a {
     background-position: center;
 }
 
+.MessageComposer_input>button.transfer {
+    width: 32px;
+    height: 32px;
+    display: block;
+    border: none;
+    text-indent: 200%;
+    white-space: nowrap;
+    overflow: hidden;
+    background-color: transparent;
+    background-image: url('icons/transfer.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
 .MessageComposer.MessageComposer_canSend button.send {
     background-image: url('icons/sending_msg.svg');
 }
