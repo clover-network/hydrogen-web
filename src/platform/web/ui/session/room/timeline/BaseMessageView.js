@@ -154,7 +154,12 @@ export class BaseMessageView extends TemplateView {
         //     options.push(Menu.option(vm.i18n`Message user`, () => { }).setIcon('msg-menu-more-msg').setData(`${vm.sender}`));
         // }
         options.push(Menu.option(vm.i18n`Reply`, () => vm.startReply()).setIcon('msg-menu-more-reply'));
-        options.push(Menu.option(vm.i18n`Forward`, () => { console.log(vm)}).setIcon('msg-menu-more-forward').setData(`${vm.sender}`));
+        options.push(Menu.option(vm.i18n`Forward`, (e) => {
+            const parts = vm?._messageBody?.parts || []
+            const texts = parts.filter(p => p.text || p.url)
+            const texts2 = texts.map(t => t.url || t.text || '').join('')
+            e.messageText = texts2
+        }).setIcon('msg-menu-more-forward').setData(`${vm.sender}`));
         // options.push(Menu.option(vm.i18n`Add reaction`, () => this._toggleEmojiMenu(button, vm)).setIcon('msg-menu-more-emoji'));
         // if (!vm.threadAnchor) {
         //     options.push(Menu.option(vm.i18n`Create thread`, (e) => {
@@ -162,7 +167,12 @@ export class BaseMessageView extends TemplateView {
         //     }).setIcon('msg-menu-more-thread').setData(`${vm.sender}`));
         // }
         // options.push(Menu.option(vm.i18n`Copy message link`, () => { }).setIcon('msg-menu-more-cp-link').setData(`${vm.sender}`));
-        options.push(Menu.option(vm.i18n`Copy`, () => { }).setIcon('msg-menu-more-cp-copy').setData(`${vm.sender}`));
+        options.push(Menu.option(vm.i18n`Copy`, () => {
+            const parts = vm?._messageBody?.parts || []
+            const texts = parts.filter(p => p.text || p.url)
+            const texts2 = texts.map(t => t.url || t.text || '').join('')
+            navigator?.clipboard?.writeText?.(texts2)
+        }).setIcon('msg-menu-more-cp-copy').setData(`${vm.sender}`));
         if (vm.canRedact) {
             options.push(Menu.option(vm.i18n`Delete message`, () => vm.redact()).setDestructive().setIcon('msg-menu-more-del'));
         }

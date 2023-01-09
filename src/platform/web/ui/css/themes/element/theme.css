@@ -733,10 +733,12 @@ a {
     background-image: url('icons/transfer.svg');
     background-repeat: no-repeat;
     background-position: center;
+    cursor: pointer;
 }
 
 .MessageComposer.MessageComposer_canSend button.send {
     background-image: url('icons/sending_msg.svg');
+    cursor: pointer;
 }
 
 .MessageComposer_input>button.emojiIcon {
@@ -751,6 +753,7 @@ a {
     background-color: transparent;
     background-repeat: no-repeat;
     background-position: center;
+    cursor: pointer;
 }
 
 .MessageComposer:not(.MessageComposer_canSend) button.send {
