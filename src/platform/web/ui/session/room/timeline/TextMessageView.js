@@ -46,12 +46,42 @@ export class TextMessageView extends BaseMessageView {
         // exclude comment nodes as they are used by t.map and friends for placeholders
         const shouldRemove = (element) => element?.nodeType !== Node.COMMENT_NODE && element.className !== "ReplyPreviewView";
 
+
         t.mapSideEffect(vm => vm.body, body => {
             while (shouldRemove(container.lastChild)) {
                 container.removeChild(container.lastChild);
             }
-            for (const part of body.parts) {
-                container.appendChild(renderPart(part));
+            if (typeof vm.body.sourceString === "object") {
+                const wrapper = document.createElement("div");
+                wrapper.className = 'transaction-message'
+                const image = document.createElement("img");
+                image.src = vm.body.sourceString?.txNftMediaLink?.substring(0, 2) === './' ?
+                    vm.body.sourceString?.txNftMediaLink.substring(2, vm.body.sourceString?.txNftMediaLink.length) :
+                    vm.body.sourceString?.txNftMediaLink
+                wrapper.appendChild(image)
+                const right = document.createElement("div");
+                right.className = 'transaction-message-right'
+                const title = document.createElement("h3");
+                title.innerHTML = `Send ${vm.body.sourceString?.txAmount? (vm.body.sourceString?.txAmount + ' ' + vm.body.sourceString?.txSymbol) : (vm.body.sourceString?.txNftTokenName + ' #' + vm.body.sourceString?.txNftTokenId)}`
+                right.appendChild(title)
+                const networks = JSON.parse(localStorage.getItem('local-accounts-networks'))
+                const netObj = networks.find(net => parseInt(net.chainId) === vm.body.sourceString?.txChainId && net.platform === vm.body.sourceString?.txPlatform);
+                const netHtml = document.createElement("div");
+                const netImg = document.createElement("img");
+                netImg.src = netObj?.assetIcon?.substring(0, 2) === './' ?
+                    netObj.assetIcon.substring(2, netObj.assetIcon.length) :
+                    netObj.assetIcon
+                const netName = document.createElement("span");
+                netName.innerHTML = netObj?.nickname??''
+                netHtml.appendChild(netImg)
+                netHtml.appendChild(netName)
+                right.appendChild(netHtml)
+                wrapper.appendChild(right)
+                container.appendChild(wrapper);
+            } else {
+                for (const part of body.parts) {
+                    container.appendChild(renderPart(part));
+                }
             }
             container.appendChild(datetime);
             container.appendChild(time);

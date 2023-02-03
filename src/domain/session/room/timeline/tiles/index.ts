@@ -16,6 +16,7 @@ limitations under the License.
 
 import {GapTile} from "./GapTile.js";
 import {TextTile} from "./TextTile.js";
+import {TxnTile} from "./TxnTile.js";
 import {RedactedTile} from "./RedactedTile.js";
 import {ImageTile} from "./ImageTile.js";
 import {VideoTile} from "./VideoTile.js";
@@ -59,6 +60,11 @@ export function tileClassForEntry(entry: TimelineEntry): TileConstructor | undef
                 const msgtype = content && content.msgtype;
                 switch (msgtype) {
                     case "m.text":
+                        if (content && content.txInfo) {
+                            return TxnTile;
+                        } else {
+                            return TextTile;
+                        }
                     case "m.notice":
                     case "m.emote":
                         return TextTile;

@@ -33,6 +33,11 @@ export function parsePlainBody(body) {
     return new MessageBody(body, parts);
 }
 
+export function parsePlainBodyObj(body) {
+    const parts = [];
+    return new MessageBody(body, parts);
+}
+
 export function stringAsBody(body) {
     return new MessageBody(body, [new TextPart(body)]);
 }
