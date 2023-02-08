@@ -62,10 +62,18 @@ export class TextMessageView extends BaseMessageView {
                 const right = document.createElement("div");
                 right.className = 'transaction-message-right'
                 const title = document.createElement("h3");
-                title.innerHTML = `Send ${vm.body.sourceString?.txAmount? (vm.body.sourceString?.txAmount + ' ' + vm.body.sourceString?.txSymbol) : (vm.body.sourceString?.txNftTokenName + ' #' + vm.body.sourceString?.txNftTokenId)}`
+                title.innerHTML = `Send ${vm.body.sourceString?.txAmount? (vm.body.sourceString?.txAmount + ' ' + vm.body.sourceString?.txSymbol) : vm.body.sourceString?.txNftTokenName}`
                 right.appendChild(title)
                 const networks = JSON.parse(localStorage.getItem('local-accounts-networks'))
-                const netObj = networks.find(net => parseInt(net.chainId) === vm.body.sourceString?.txChainId && net.platform === vm.body.sourceString?.txPlatform);
+                const netObj = networks.find(net => {
+                    if (vm.body.sourceString?.txPlatform === 'ethereum') {
+                        return parseInt(net.chainId) === vm.body.sourceString?.txChainId && net.platform === vm.body.sourceString?.txPlatform
+                    } else if (vm.body.sourceString?.txPlatform === 'substrate') {
+                        return net.symbol === vm.body.sourceString?.txSymbol && net.platform === vm.body.sourceString?.txPlatform
+                    } else {
+                        return net.platform === vm.body.sourceString?.txPlatform
+                    }
+                });
                 const netHtml = document.createElement("div");
                 const netImg = document.createElement("img");
                 netImg.src = netObj?.assetIcon?.substring(0, 2) === './' ?
