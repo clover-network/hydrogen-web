@@ -52,17 +52,15 @@ export class TextMessageView extends BaseMessageView {
                 container.removeChild(container.lastChild);
             }
             if (typeof vm.body.sourceString === "object") {
-                const wrapper = document.createElement("div");
-                wrapper.className = 'transaction-message'
-                const image = document.createElement("img");
-                image.src = vm.body.sourceString?.txNftMediaLink?.substring(0, 2) === './' ?
-                    vm.body.sourceString?.txNftMediaLink.substring(2, vm.body.sourceString?.txNftMediaLink.length) :
-                    vm.body.sourceString?.txNftMediaLink
+                const wrapper = t.div({ className: 'transaction-message'});
+                const image = t.img({
+                    src: vm => vm.body.sourceString?.txNftMediaLink?.substring(0, 2) === './' ?
+                        vm.body.sourceString?.txNftMediaLink.substring(2, vm.body.sourceString?.txNftMediaLink.length) :
+                        vm.body.sourceString?.txNftMediaLink,
+                })
                 wrapper.appendChild(image)
-                const right = document.createElement("div");
-                right.className = 'transaction-message-right'
-                const title = document.createElement("h3");
-                title.innerHTML = `Send ${vm.body.sourceString?.txAmount? (vm.body.sourceString?.txAmount + ' ' + vm.body.sourceString?.txSymbol) : vm.body.sourceString?.txNftTokenName}`
+                const right = t.div({ className: 'transaction-message-right'});
+                const title = t.h3(`Send ${vm.body.sourceString?.txAmount? (vm.body.sourceString?.txAmount + ' ' + vm.body.sourceString?.txSymbol) : vm.body.sourceString?.txNftTokenName}`);
                 right.appendChild(title)
                 const networks = JSON.parse(localStorage.getItem('local-accounts-networks'))
                 const netObj = networks.find(net => {
@@ -74,13 +72,13 @@ export class TextMessageView extends BaseMessageView {
                         return net.platform === vm.body.sourceString?.txPlatform
                     }
                 });
-                const netHtml = document.createElement("div");
-                const netImg = document.createElement("img");
-                netImg.src = netObj?.assetIcon?.substring(0, 2) === './' ?
-                    netObj.assetIcon.substring(2, netObj.assetIcon.length) :
-                    netObj.assetIcon
-                const netName = document.createElement("span");
-                netName.innerHTML = netObj?.nickname??''
+                const netHtml = t.div();
+                const netImg = t.img({
+                    src: netObj?.assetIcon?.substring(0, 2) === './' ?
+                        netObj.assetIcon.substring(2, netObj.assetIcon.length) :
+                        netObj.assetIcon
+                });
+                const netName = t.span(netObj?.nickname??'');
                 netHtml.appendChild(netImg)
                 netHtml.appendChild(netName)
                 right.appendChild(netHtml)

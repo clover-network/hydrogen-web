@@ -22,6 +22,9 @@ import { Popup } from "../../../general/Popup.js";
 import { Menu } from "../../../general/Menu.js";
 import { ReactionsView } from "./ReactionsView.js";
 
+export function getBlockExplorerUrlForTx(txExplorerLink, hash) {
+    return `${txExplorerLink.replace(/\/+$/u, '')}/tx/${hash}`
+}
 export class BaseMessageView extends TemplateView {
     constructor(value, viewClassForTile, renderFlags, tagName = "li") {
         super(value);
@@ -61,6 +64,9 @@ export class BaseMessageView extends TemplateView {
                 disabled: !this._interactive,
                 haveThread: !!vm.threadAnchor,
                 continuation: vm => vm.isContinuation,
+            },
+            onclick: (e) => {
+                window.open(getBlockExplorerUrlForTx(vm.body.sourceString?.txExplorerLink, vm.body.sourceString?.txHash))
             },
             oncontextmenu: (e) => {
                 e?.preventDefault();
