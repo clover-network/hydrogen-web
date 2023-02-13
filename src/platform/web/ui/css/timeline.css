@@ -28,6 +28,7 @@ limitations under the License.
 
 .Timeline_scroller {
     overflow-y: scroll;
+    overflow-x: hidden;
     overscroll-behavior-y: contain;
     overflow-anchor: none;
     padding: 0;

@@ -75,8 +75,8 @@ export class TextMessageView extends BaseMessageView {
                 const netHtml = t.div();
                 const netImg = t.img({
                     src: netObj?.assetIcon?.substring(0, 2) === './' ?
-                        netObj.assetIcon.substring(2, netObj.assetIcon.length) :
-                        netObj.assetIcon
+                        netObj?.assetIcon?.substring(2, netObj?.assetIcon?.length)??'' :
+                        netObj?.assetIcon??''
                 });
                 const netName = t.span(netObj?.nickname??'');
                 netHtml.appendChild(netImg)
