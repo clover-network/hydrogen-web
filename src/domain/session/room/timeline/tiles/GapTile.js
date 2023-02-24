@@ -153,7 +153,7 @@ export class GapTile extends SimpleTile {
             return "Loading";
         }
         else {
-            return "Not Loading";
+            return "";
         }
     }
 }

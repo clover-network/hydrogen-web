@@ -45,15 +45,11 @@ export class BaseMessageView extends TemplateView {
         const children = [this.renderMessageBody(t, vm)];
         let dropDownAnchor = null
         if (vm.shape !== "redacted") {
-            dropDownAnchor = t.div({ className: 'Timeline_messageBody', onMouseUp: (e) => {
-                if (!e) e = window.event;
-                if (e.button == 2) {
-                    this._toggleMenuMore(e.target, vm)
-                }
-            } });
+            dropDownAnchor = t.div({ className: 'Timeline_messageOptions3', onClick: (e) => this._toggleMenuMore(e.target, vm) });
             children.push(dropDownAnchor);
         }
 
+        var timer
         const li = t.el(this._tagName, {
             className: {
                 "Timeline_message": true,
@@ -67,6 +63,25 @@ export class BaseMessageView extends TemplateView {
             },
             onclick: (e) => {
                 window.open(getBlockExplorerUrlForTx(vm.body.sourceString?.txExplorerLink, vm.body.sourceString?.txHash))
+            },
+            ontouchmove: () => {
+                if (timer) {
+                    clearTimeout(timer);
+                    timer = null;
+                }
+            },
+            ontouchstart: (e) => {
+                if (!timer) {
+                    timer = setTimeout(() => {
+                        this._toggleMenuMore(dropDownAnchor, vm)
+                    }, 600);
+                }
+            },
+            ontouchend: () => {
+                if (timer) {
+                    clearTimeout(timer);
+                    timer = null;
+                }
             },
             oncontextmenu: (e) => {
                 e?.preventDefault();
@@ -184,7 +199,13 @@ export class BaseMessageView extends TemplateView {
         }
         this.root().classList.add("menuOpen");
         const onClose = () => this.root().classList.remove("menuOpen");
-        this._menuPopup = new Popup(new Menu(options, 'msg-vertical'), onClose);
+        const oldMenus = document.querySelectorAll('.popupContainer .msg-vertical')
+        if (oldMenus) {
+            oldMenus.forEach(menu => {
+                menu.parentNode.removeChild(menu)
+            })
+        }
+        this._menuPopup = new Popup(new Menu(options, vm.isOwn ? 'msg-vertical is-own-menu' : 'msg-vertical'), onClose);
         this._menuPopup.trackInTemplateView(this);
         this._menuPopup.showRelativeTo(button, 2);
     }
