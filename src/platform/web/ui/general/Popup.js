@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 import {tag} from "./html";
+import _ from 'lodash'
 
 export class Popup {
     constructor(view, closeCallback = null) {
@@ -69,7 +70,14 @@ export class Popup {
                 document.body.removeEventListener("scroll", this, true);
             }
             document.body.removeEventListener("click", this, false);
-            this._popup.remove();
+            if (_.includes(this._popup.classList, 'msg-vertical')) {
+                this._popup.classList.add('hideMenu')
+                setTimeout(() => {
+                    this._popup.remove();
+                }, 200)
+            } else {
+                this._popup.remove();
+            }
             this._view = null;
             if (this._closeCallback) {
                 this._closeCallback();

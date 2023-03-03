@@ -61,7 +61,8 @@
         "another-json": "^0.2.0",
         "base64-arraybuffer": "^0.2.0",
         "dompurify": "^2.3.0",
-        "off-color": "^2.0.0",
-        "emoji-mart": "^5.2.2"
+        "emoji-mart": "^5.2.2",
+        "lodash": "^4.17.21",
+        "off-color": "^2.0.0"
     }
 }

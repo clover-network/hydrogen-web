@@ -23,6 +23,9 @@ import { Menu } from "../../../general/Menu.js";
 import { ReactionsView } from "./ReactionsView.js";
 
 export function getBlockExplorerUrlForTx(txExplorerLink, hash) {
+    if (!txExplorerLink) {
+        return null
+    }
     return `${txExplorerLink.replace(/\/+$/u, '')}/tx/${hash}`
 }
 export class BaseMessageView extends TemplateView {
@@ -45,7 +48,8 @@ export class BaseMessageView extends TemplateView {
         const children = [this.renderMessageBody(t, vm)];
         let dropDownAnchor = null
         if (vm.shape !== "redacted") {
-            dropDownAnchor = t.div({ className: 'Timeline_messageOptions3', onClick: (e) => this._toggleMenuMore(e.target, vm) });
+            // dropDownAnchor = t.div({ className: 'Timeline_messageOptions3', onClick: (e) => this._toggleMenuMore(e.target, vm) });
+            dropDownAnchor = t.div({ className: 'Timeline_messageOptions3' });
             children.push(dropDownAnchor);
         }
 
@@ -202,7 +206,10 @@ export class BaseMessageView extends TemplateView {
         const oldMenus = document.querySelectorAll('.popupContainer .msg-vertical')
         if (oldMenus) {
             oldMenus.forEach(menu => {
-                menu.parentNode.removeChild(menu)
+                menu.classList.add("hideMenu")
+                setTimeout(() => {
+                    menu.parentNode.removeChild(menu)
+                }, 200)
             })
         }
         this._menuPopup = new Popup(new Menu(options, vm.isOwn ? 'msg-vertical is-own-menu' : 'msg-vertical'), onClose);
