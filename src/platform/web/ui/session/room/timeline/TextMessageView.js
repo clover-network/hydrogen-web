@@ -60,7 +60,7 @@ export class TextMessageView extends BaseMessageView {
                 })
                 wrapper.appendChild(image)
                 const right = t.div({ className: 'transaction-message-right'});
-                const title = t.h3(`Send ${vm.body.sourceString?.txAmount? (vm.body.sourceString?.txAmount + ' ' + vm.body.sourceString?.txSymbol) : vm.body.sourceString?.txNftTokenName}`);
+                const title = t.h3(`Sent ${vm.body.sourceString?.txAmount? (vm.body.sourceString?.txAmount + ' ' + vm.body.sourceString?.txSymbol) : vm.body.sourceString?.txNftTokenName}`);
                 right.appendChild(title)
                 const networks = JSON.parse(localStorage.getItem('local-accounts-networks'))
                 const netObj = networks.find(net => {
