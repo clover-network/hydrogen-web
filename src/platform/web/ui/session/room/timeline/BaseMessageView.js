@@ -66,7 +66,9 @@ export class BaseMessageView extends TemplateView {
                 continuation: vm => vm.isContinuation,
             },
             onclick: (e) => {
-                window.open(getBlockExplorerUrlForTx(vm.body.sourceString?.txExplorerLink, vm.body.sourceString?.txHash))
+                if (typeof vm.body.sourceString === 'object' && vm.body.sourceString?.txHash) {
+                    window.open(getBlockExplorerUrlForTx(vm.body.sourceString?.txExplorerLink, vm.body.sourceString?.txHash))
+                }
             },
             ontouchmove: () => {
                 if (timer) {
