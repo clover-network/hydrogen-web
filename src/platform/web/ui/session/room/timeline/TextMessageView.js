@@ -46,19 +46,26 @@ export class TextMessageView extends BaseMessageView {
         // exclude comment nodes as they are used by t.map and friends for placeholders
         const shouldRemove = (element) => element?.nodeType !== Node.COMMENT_NODE && element.className !== "ReplyPreviewView";
 
-
         t.mapSideEffect(vm => vm.body, body => {
             while (shouldRemove(container.lastChild)) {
                 container.removeChild(container.lastChild);
             }
             if (typeof vm.body.sourceString === "object") {
                 const wrapper = t.div({ className: 'transaction-message'});
-                const image = t.img({
-                    src: vm => vm.body.sourceString?.txNftMediaLink?.substring(0, 2) === './' ?
-                        vm.body.sourceString?.txNftMediaLink.substring(2, vm.body.sourceString?.txNftMediaLink.length) :
-                        vm.body.sourceString?.txNftMediaLink,
-                })
-                wrapper.appendChild(image)
+                const txNftMediaType = vm.body.sourceString?.txNftMediaType
+                if (txNftMediaType === 'video') {
+                    const video = t.video({
+                        src: vm => vm.body.sourceString?.txNftMediaLink
+                    })
+                    wrapper.appendChild(video)
+                } else {
+                    const image = t.img({
+                        src: vm => vm.body.sourceString?.txNftMediaLink?.substring(0, 2) === './' ?
+                            vm.body.sourceString?.txNftMediaLink.substring(2, vm.body.sourceString?.txNftMediaLink.length) :
+                            vm.body.sourceString?.txNftMediaLink,
+                    })
+                    wrapper.appendChild(image)
+                }
                 const right = t.div({ className: 'transaction-message-right'});
                 const title = t.h3(`Sent ${vm.body.sourceString?.txAmount? (vm.body.sourceString?.txAmount + ' ' + vm.body.sourceString?.txSymbol) : vm.body.sourceString?.txNftTokenName}`);
                 right.appendChild(title)
