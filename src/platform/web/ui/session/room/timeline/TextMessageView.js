@@ -50,7 +50,7 @@ export class TextMessageView extends BaseMessageView {
             while (shouldRemove(container.lastChild)) {
                 container.removeChild(container.lastChild);
             }
-            if (typeof vm.body.sourceString === "object") {
+            if (typeof vm.body.sourceString === "object" && !vm.body.sourceString?.forwardFromAddress) {
                 const wrapper = t.div({ className: 'transaction-message'});
                 const txNftMediaType = vm.body.sourceString?.txNftMediaType
                 if (txNftMediaType === 'video') {
@@ -90,6 +90,20 @@ export class TextMessageView extends BaseMessageView {
                 netHtml.appendChild(netName)
                 right.appendChild(netHtml)
                 wrapper.appendChild(right)
+                container.appendChild(wrapper);
+            }
+            else if (typeof vm.body.sourceString === "object" && vm.body.sourceString?.forwardFromAddress) {
+                const wrapper = t.div({ className: 'forward-message'});
+                const title = t.h3('Forwarded message');
+                wrapper.appendChild(title)
+                const content = t.div({className: 'forward-message-content'})
+                const address = t.div({className: 'forward-from-address'}, vm => vm.body.sourceString.forwardFromAddress)
+                const name = t.div({className: 'forward-from-name'}, vm => vm.body.sourceString.forwardFromAddress)
+                const message = t.div({className: 'forward-from-message'}, vm => vm.body.sourceString.message)
+                content.appendChild(address)
+                content.appendChild(name)
+                content.appendChild(message)
+                wrapper.appendChild(content)
                 container.appendChild(wrapper);
             } else {
                 for (const part of body.parts) {

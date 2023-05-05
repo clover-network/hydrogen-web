@@ -66,7 +66,7 @@ export class BaseMessageView extends TemplateView {
                 continuation: vm => vm.isContinuation,
             },
             onclick: (e) => {
-                if (typeof vm.body.sourceString === 'object' && vm.body.sourceString?.txHash) {
+                if (typeof vm.body.sourceString === 'object' && vm.body.sourceString?.txHash && !vm.body.sourceString?.forwardFromAddress) {
                     window.open(getBlockExplorerUrlForTx(vm.body.sourceString?.txExplorerLink, vm.body.sourceString?.txHash))
                 }
             },
@@ -181,12 +181,20 @@ export class BaseMessageView extends TemplateView {
         //     options.push(Menu.option(vm.i18n`Message user`, () => { }).setIcon('msg-menu-more-msg').setData(`${vm.sender}`));
         // }
         options.push(Menu.option(vm.i18n`Reply`, () => vm.startReply()).setIcon('msg-menu-more-reply'));
-        options.push(Menu.option(vm.i18n`Forward`, (e) => {
-            const parts = vm?._messageBody?.parts || []
-            const texts = parts.filter(p => p.text || p.url)
-            const texts2 = texts.map(t => t.url || t.text || '').join('')
-            e.messageText = texts2
-        }).setIcon('msg-menu-more-forward').setData(`${vm.sender}`));
+        if (typeof vm.body.sourceString !== "object" && !vm.body.sourceString?.forwardFromAddress) {
+            options.push(Menu.option(vm.i18n`Forward`, (e) => {
+                const parts = vm?._messageBody?.parts || []
+                const texts = parts.filter(p => p.text || p.url)
+                const texts2 = texts.map(t => t.url || t.text || '').join('')
+                const obj = {
+                    message: texts2,
+                    isOwn: vm.isOwn
+                }
+                // e.messageText = texts2
+                e.messageText = JSON.stringify(obj)
+            }).setIcon('msg-menu-more-forward').setData(`${vm.sender}`));
+        }
+
         // options.push(Menu.option(vm.i18n`Add reaction`, () => this._toggleEmojiMenu(button, vm)).setIcon('msg-menu-more-emoji'));
         // if (!vm.threadAnchor) {
         //     options.push(Menu.option(vm.i18n`Create thread`, (e) => {
