@@ -203,10 +203,15 @@ export class BaseMessageView extends TemplateView {
         // }
         // options.push(Menu.option(vm.i18n`Copy message link`, () => { }).setIcon('msg-menu-more-cp-link').setData(`${vm.sender}`));
         options.push(Menu.option(vm.i18n`Copy`, () => {
-            const parts = vm?._messageBody?.parts || []
-            const texts = parts.filter(p => p.text || p.url)
-            const texts2 = texts.map(t => t.url || t.text || '').join('')
-            navigator?.clipboard?.writeText?.(texts2)
+            if (typeof vm.body.sourceString === "object" && vm.body.sourceString?.forwardFromAddress) {
+                const text = vm.body.sourceString?.message
+                navigator?.clipboard?.writeText?.(text)
+            } else {
+                const parts = vm?._messageBody?.parts || []
+                const texts = parts.filter(p => p.text || p.url)
+                const texts2 = texts.map(t => t.url || t.text || '').join('')
+                navigator?.clipboard?.writeText?.(texts2)
+            }
         }).setIcon('msg-menu-more-cp-copy').setData(`${vm.sender}`));
         if (vm.canRedact) {
             options.push(Menu.option(vm.i18n`Delete message`, () => vm.redact()).setDestructive().setIcon('msg-menu-more-del'));
