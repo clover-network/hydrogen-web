@@ -38,11 +38,17 @@ class MenuOption {
         this.callback = callback;
         this.icon = null;
         this.data = null;
+        this.buttonClassName = '';
         this.destructive = false;
     }
 
     setIcon(className) {
         this.icon = className;
+        return this;
+    }
+
+    setButtonClassName(className) {
+        this.buttonClassName = className;
         return this;
     }
 
@@ -67,6 +73,6 @@ class MenuOption {
         return t.li({
             className,
             'data-iData': this.data || ''
-        }, t.button({className:"menu-item", onClick: this.callback}, this.label));
+        }, t.button({ className: `menu-item ${this.buttonClassName}`, onClick: this.callback }, this.label));
     }
 }

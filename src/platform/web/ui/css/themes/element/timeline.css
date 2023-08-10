@@ -103,7 +103,7 @@ limitations under the License.
     display: inline-block;
 }
 li .Timeline_messageSender {
-    display: none;
+    /*display: none;*/
 }
 
 .Timeline_message.own .Timeline_messageAvatar {
@@ -203,7 +203,7 @@ li .Timeline_messageSender {
     text-decoration: none;
     width: 40px;
     height: 40px;
-    display: none;
+    margin-top: 55%;
 }
 
 .Timeline_messageSender {

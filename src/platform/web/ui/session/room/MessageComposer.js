@@ -66,15 +66,10 @@ export class MessageComposer extends TemplateView {
         });
         const input = t.div({ className: "MessageComposer_input" }, [
             t.button({
-                className: "transfer",
-                title: vm.i18n`transfer`,
-                onClick: evt => {},
-            }, vm.i18n`transfer`),
-            // t.button({
-            //     className: "sendFile",
-            //     title: vm.i18n`Pick attachment`,
-            //     onClick: evt => this._toggleAttachmentMenu(evt),
-            // }, vm.i18n`Send file`),
+                className: "sendFile",
+                title: vm.i18n`Pick attachment`,
+                onClick: evt => this._toggleAttachmentMenu(evt),
+            }, vm.i18n`Send file`),
             t.button({
                 className: "emojiIcon",
                 title: vm.i18n`emoji`,
@@ -183,9 +178,9 @@ export class MessageComposer extends TemplateView {
             const vm = this.value;
             this._attachmentPopup = new Popup(new Menu([
                 Menu.option(vm.i18n`Video`, () => vm.sendVideo()).setIcon("video"),
-                Menu.option(vm.i18n`Photo`, () => vm.sendPicture()).setIcon("picture"),
-                Menu.option(vm.i18n`Document`, () => vm.sendFile()).setIcon("file"),
-                Menu.option(vm.i18n`Token`, () => { }).setIcon("token"),
+                Menu.option(vm.i18n`Photo / Video`, (e) => vm.sendPicture(e)).setIcon("picture").setButtonClassName('sending-attach-picture'),
+                Menu.option(vm.i18n`File`, () => vm.sendFile()).setIcon("file").setButtonClassName('sending-attach-file'),
+                Menu.option(vm.i18n`Send Tokens`, () => { }).setIcon("token").setButtonClassName('sending-attach-token'),
             ], 'bottom-menu'));
             this._attachmentPopup.trackInTemplateView(this);
             this._attachmentPopup.showRelativeTo(evt.target, 12);

@@ -124,8 +124,7 @@ export class RoomMemberTile extends SimpleTile {
                 return `${prevContent.displayname ?? stateKey} changed their name to ${content.displayname}`;
             }
         } else if (membership === "join") {
-            return `Everyone welcome {userName}`;
-            // return `Everyone welcome ${targetName}`;
+            return `Everyone welcome ${targetName}`;
         } else if (membership === "invite") {
             return `Everyone welcome ${targetName}, invited by ${senderName}`;
         } else if (prevMembership === "invite") {

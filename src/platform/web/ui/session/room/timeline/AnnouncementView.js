@@ -15,7 +15,9 @@ limitations under the License.
 */
 
 import { TemplateView } from "../../../general/TemplateView";
+import _ from 'lodash'
 
+const OWNERSTR = '@admin'
 export class AnnouncementView extends TemplateView {
     // ignore other arguments
     constructor(vm) {
@@ -30,6 +32,7 @@ export class AnnouncementView extends TemplateView {
         const showTime = (isNewDay || inNewDay) && !noContent
 
 
+        const isOwner = _.includes(this.value?.targetName, OWNERSTR)
         const timeTitle = t.div({ className: { timeTitle: true } });
         const timeTitleTimer = t.time({ className: {} }, this.value?.date);
         timeTitle.appendChild(timeTitleTimer)
@@ -37,22 +40,18 @@ export class AnnouncementView extends TemplateView {
         const showWelcome = (this.value?.announcement || '').toLocaleLowerCase().indexOf('welcome') !== -1;
         const shouldReplace = (this.value?.announcement || '').indexOf('{userName}') !== -1;
         return t.li({
-            className: `AnnouncementView ${showTime ? 'showTime' : ''} ${shouldHide ? 'hidden' : 'joining'}`
+            className: `AnnouncementView ${showTime ? 'showTime' : ''} ${(shouldHide || isOwner) ? 'hidden' : 'joining'}`
         }, [
             t.div({
                 className: 'AnnouncementView_inner'
             }, [
                 t.div({ className: 'AnnouncementView_inner_upper' }, [
-                    t.div({ className: 'AnnouncementView_inner_upper_img' }),
                     ...shouldReplace ? [
                         t.div(`${(this.value?.announcement || '').replace('{userName}', ' ')}`),
                         t.span({ style: 'margin-left: 4px;', className: `usercolor${this.value?.colorIndex}` }, `${this.value?.targetName}`)
                     ] : [t.div(`${this.value?.announcement}`)],
                 ]),
-                t.div({ className: 'AnnouncementView_inner_below' }, showWelcome ? [
-                    t.span({ className: 'AnnouncementView_hi', onClick: () => this.value?.sendWelcome() }, '👋 Wave to say hi!'),
-                    t.time({ className: 'AnnouncementView_innertime' }, this.value?.time)
-                ] : [
+                t.div({ className: 'AnnouncementView_inner_below' }, [
                     t.span(),
                     t.time({ className: 'AnnouncementView_innertime' }, this.value?.time)
                 ]),

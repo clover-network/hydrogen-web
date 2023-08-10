@@ -66,7 +66,7 @@ export class BaseMessageView extends TemplateView {
                 continuation: vm => vm.isContinuation,
             },
             onclick: (e) => {
-                if (typeof vm.body.sourceString === 'object' && vm.body.sourceString?.txHash && !vm.body.sourceString?.forwardFromAddress) {
+                if (!vm.threadAnchor && vm._getContent().msgtype === 'm.text' && typeof vm.body.sourceString === 'object' && vm.body.sourceString?.txHash && !vm.body.sourceString?.forwardFromAddress) {
                     window.open(getBlockExplorerUrlForTx(vm.body.sourceString?.txExplorerLink, vm.body.sourceString?.txHash))
                 }
             },
@@ -181,18 +181,20 @@ export class BaseMessageView extends TemplateView {
         //     options.push(Menu.option(vm.i18n`Message user`, () => { }).setIcon('msg-menu-more-msg').setData(`${vm.sender}`));
         // }
         options.push(Menu.option(vm.i18n`Reply`, () => vm.startReply()).setIcon('msg-menu-more-reply'));
-        if (typeof vm.body.sourceString !== "object" && !vm.body.sourceString?.forwardFromAddress) {
-            options.push(Menu.option(vm.i18n`Forward`, (e) => {
-                const parts = vm?._messageBody?.parts || []
-                const texts = parts.filter(p => p.text || p.url)
-                const texts2 = texts.map(t => t.url || t.text || '').join('')
-                const obj = {
-                    message: texts2,
-                    isOwn: vm.isOwn
-                }
-                // e.messageText = texts2
-                e.messageText = JSON.stringify(obj)
-            }).setIcon('msg-menu-more-forward').setData(`${vm.sender}`));
+        if (!vm.threadAnchor && vm._getContent().msgtype === 'm.text') {
+            if (typeof vm.body.sourceString !== "object" && !vm.body.sourceString?.forwardFromAddress) {
+                options.push(Menu.option(vm.i18n`Forward`, (e) => {
+                    const parts = vm?._messageBody?.parts || []
+                    const texts = parts.filter(p => p.text || p.url)
+                    const texts2 = texts.map(t => t.url || t.text || '').join('')
+                    const obj = {
+                        message: texts2,
+                        isOwn: vm.isOwn
+                    }
+                    // e.messageText = texts2
+                    e.messageText = JSON.stringify(obj)
+                }).setIcon('msg-menu-more-forward').setData(`${vm.sender}`));
+            }
         }
 
         // options.push(Menu.option(vm.i18n`Add reaction`, () => this._toggleEmojiMenu(button, vm)).setIcon('msg-menu-more-emoji'));
@@ -202,17 +204,20 @@ export class BaseMessageView extends TemplateView {
         //     }).setIcon('msg-menu-more-thread').setData(`${vm.sender}`));
         // }
         // options.push(Menu.option(vm.i18n`Copy message link`, () => { }).setIcon('msg-menu-more-cp-link').setData(`${vm.sender}`));
-        options.push(Menu.option(vm.i18n`Copy`, () => {
-            if (typeof vm.body.sourceString === "object" && vm.body.sourceString?.forwardFromAddress) {
-                const text = vm.body.sourceString?.message
-                navigator?.clipboard?.writeText?.(text)
-            } else {
-                const parts = vm?._messageBody?.parts || []
-                const texts = parts.filter(p => p.text || p.url)
-                const texts2 = texts.map(t => t.url || t.text || '').join('')
-                navigator?.clipboard?.writeText?.(texts2)
-            }
-        }).setIcon('msg-menu-more-cp-copy').setData(`${vm.sender}`));
+        if (vm._format === 'Plain' || vm._format === 'Html') {
+            options.push(Menu.option(vm.i18n`Copy`, () => {
+                if (typeof vm.body.sourceString === "object" && vm.body.sourceString?.forwardFromAddress) {
+                    const text = vm.body.sourceString?.message
+                    navigator?.clipboard?.writeText?.(text)
+                } else {
+                    const parts = vm?._messageBody?.parts || []
+                    const texts = parts.filter(p => p.text || p.url)
+                    const texts2 = texts.map(t => t.url || t.text || '').join('')
+                    navigator?.clipboard?.writeText?.(texts2)
+                }
+            }).setIcon('msg-menu-more-cp-copy').setData(`${vm.sender}`));
+        }
+
         if (vm.canRedact) {
             options.push(Menu.option(vm.i18n`Delete message`, () => vm.redact()).setDestructive().setIcon('msg-menu-more-del'));
         }

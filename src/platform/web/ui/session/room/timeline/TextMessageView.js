@@ -50,61 +50,75 @@ export class TextMessageView extends BaseMessageView {
             while (shouldRemove(container.lastChild)) {
                 container.removeChild(container.lastChild);
             }
-            if (typeof vm.body.sourceString === "object" && !vm.body.sourceString?.forwardFromAddress) {
-                const wrapper = t.div({ className: 'transaction-message'});
-                const txNftMediaType = vm.body.sourceString?.txNftMediaType
-                if (txNftMediaType === 'video') {
-                    const video = t.video({
-                        src: vm => vm.body.sourceString?.txNftMediaLink
-                    })
-                    wrapper.appendChild(video)
-                } else {
-                    const image = t.img({
-                        src: vm => vm.body.sourceString?.txNftMediaLink?.substring(0, 2) === './' ?
-                            vm.body.sourceString?.txNftMediaLink.substring(2, vm.body.sourceString?.txNftMediaLink.length) :
-                            vm.body.sourceString?.txNftMediaLink,
-                    })
-                    wrapper.appendChild(image)
-                }
-                const right = t.div({ className: 'transaction-message-right'});
-                const title = t.h3(`Sent ${vm.body.sourceString?.txAmount? (vm.body.sourceString?.txAmount + ' ' + vm.body.sourceString?.txSymbol) : vm.body.sourceString?.txNftTokenName}`);
-                right.appendChild(title)
-                const networks = JSON.parse(localStorage.getItem('local-accounts-networks'))
-                const netObj = networks.find(net => {
-                    if (vm.body.sourceString?.txPlatform === 'ethereum') {
-                        return parseInt(net.chainId) === vm.body.sourceString?.txChainId && net.platform === vm.body.sourceString?.txPlatform
-                    } else if (vm.body.sourceString?.txPlatform === 'substrate') {
-                        return net.symbol === vm.body.sourceString?.txSymbol && net.platform === vm.body.sourceString?.txPlatform
-                    } else {
-                        return net.platform === vm.body.sourceString?.txPlatform
+            if (typeof vm.body.sourceString === "object") {
+                if (vm.body.sourceString?.forwardFromAddress) {
+                    const wrapper = t.div({ className: 'forward-message'});
+                    const title = t.h3('Forwarded message');
+                    wrapper.appendChild(title)
+                    const content = t.div({className: 'forward-message-content'})
+                    const address = t.div({className: 'forward-from-address'}, vm => vm.body.sourceString.forwardFromAddress)
+                    const name = t.div({className: 'forward-from-name'}, vm => vm.body.sourceString.forwardFromAddress)
+                    const message = t.div({className: 'forward-from-message'}, vm => vm.body.sourceString.message)
+                    content.appendChild(address)
+                    content.appendChild(name)
+                    content.appendChild(message)
+                    wrapper.appendChild(content)
+                    container.appendChild(wrapper);
+                } else if (vm.body.sourceString?.txAmount) {
+                    if (!vm.body.sourceString?.txAmount) {
+                        container.appendChild(text(vm.body.sourceString?.message));
+                        return
                     }
-                });
-                const netHtml = t.div();
-                const netImg = t.img({
-                    src: netObj?.assetIcon?.substring(0, 2) === './' ?
-                        netObj?.assetIcon?.substring(2, netObj?.assetIcon?.length)??'' :
-                        netObj?.assetIcon??''
-                });
-                const netName = t.span(netObj?.nickname??'');
-                netHtml.appendChild(netImg)
-                netHtml.appendChild(netName)
-                right.appendChild(netHtml)
-                wrapper.appendChild(right)
-                container.appendChild(wrapper);
-            }
-            else if (typeof vm.body.sourceString === "object" && vm.body.sourceString?.forwardFromAddress) {
-                const wrapper = t.div({ className: 'forward-message'});
-                const title = t.h3('Forwarded message');
-                wrapper.appendChild(title)
-                const content = t.div({className: 'forward-message-content'})
-                const address = t.div({className: 'forward-from-address'}, vm => vm.body.sourceString.forwardFromAddress)
-                const name = t.div({className: 'forward-from-name'}, vm => vm.body.sourceString.forwardFromAddress)
-                const message = t.div({className: 'forward-from-message'}, vm => vm.body.sourceString.message)
-                content.appendChild(address)
-                content.appendChild(name)
-                content.appendChild(message)
-                wrapper.appendChild(content)
-                container.appendChild(wrapper);
+                    const wrapper = t.div({ className: 'transaction-message'});
+                    const txNftMediaType = vm.body.sourceString?.txNftMediaType
+                    if (txNftMediaType === 'video') {
+                        const video = t.video({
+                            src: vm => vm.body.sourceString?.txNftMediaLink
+                        })
+                        wrapper.appendChild(video)
+                    } else {
+                        const image = t.img({
+                            src: vm => vm.body.sourceString?.txNftMediaLink?.substring(0, 2) === './' ?
+                                vm.body.sourceString?.txNftMediaLink.substring(2, vm.body.sourceString?.txNftMediaLink.length) :
+                                vm.body.sourceString?.txNftMediaLink,
+                        })
+                        wrapper.appendChild(image)
+                    }
+                    const right = t.div({ className: 'transaction-message-right'});
+                    const title = t.h3(`Sent ${vm.body.sourceString?.txAmount? (vm.body.sourceString?.txAmount + ' ' + vm.body.sourceString?.txSymbol) : vm.body.sourceString?.txNftTokenName}`);
+                    right.appendChild(title)
+                    const networks = JSON.parse(localStorage.getItem('local-accounts-networks'))
+                    const netObj = networks.find(net => {
+                        if (vm.body.sourceString?.txPlatform === 'ethereum') {
+                            return parseInt(net.chainId) === vm.body.sourceString?.txChainId && net.platform === vm.body.sourceString?.txPlatform
+                        } else if (vm.body.sourceString?.txPlatform === 'substrate') {
+                            return net.symbol === vm.body.sourceString?.txSymbol && net.platform === vm.body.sourceString?.txPlatform
+                        } else {
+                            return net.platform === vm.body.sourceString?.txPlatform
+                        }
+                    });
+                    const netHtml = t.div();
+                    const netImg = t.img({
+                        src: netObj?.assetIcon?.substring(0, 2) === './' ?
+                            netObj?.assetIcon?.substring(2, netObj?.assetIcon?.length)??'' :
+                            netObj?.assetIcon??''
+                    });
+                    const netName = t.span(netObj?.nickname??'');
+                    netHtml.appendChild(netImg)
+                    netHtml.appendChild(netName)
+                    right.appendChild(netHtml)
+                    wrapper.appendChild(right)
+                    container.appendChild(wrapper);
+                } else {
+                    const wrapper = t.div({ className: 'forward-message'});
+                    const title = t.h3('Forwarded message');
+                    wrapper.appendChild(title)
+                    const content = t.div({className: 'forward-message-content'})
+                    const message = t.div({className: 'forward-from-message'}, vm => vm.body.sourceString.message)
+                    content.appendChild(message)
+                    wrapper.appendChild(content)
+                    container.appendChild(wrapper);
+                }
             } else {
                 for (const part of body.parts) {
                     container.appendChild(renderPart(part));
