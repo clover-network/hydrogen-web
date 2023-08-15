@@ -289,6 +289,22 @@ export class RoomViewModel extends ViewModel {
             if (!file) {
                 return;
             }
+            console.log('file.blob.mimeType:', file, file.blob.mimeType)
+            const aatachmentMaxSize = 50 * 1024 * 1024;
+            if (file.blob.size > aatachmentMaxSize) {
+                event.videoOversized = true
+                event?.videoOversizedAlert?.()
+                return
+            }
+            const rightFileType = file.blob.mimeType.includes('xml') || file.blob.mimeType.includes('text/plain') ||
+                file.blob.mimeType.includes('word') || file.blob.mimeType.includes('pdf') ||
+                file.blob.mimeType.includes('powerpoint') || file.blob.mimeType.includes('officedocument') ||
+                file.blob.mimeType.includes('excel')
+            if (!rightFileType) {
+                event?.videoTypeUnsupport?.()
+                return
+            }
+            event.attachSent = true
             return this._sendFile(file);
         } catch (err) {
             console.error(err);

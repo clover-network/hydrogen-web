@@ -62,7 +62,7 @@ export class MediaRepository {
         if (!url) return
         const urlObj = new URL(url)
         const newDownloader = document.createElement('a')
-        newDownloader.setAttribute('href', `${urlObj.pathname}`)
+        newDownloader.setAttribute('href', `${urlObj.href}`)
         newDownloader.setAttribute('style', 'display: none')
         newDownloader.setAttribute('target', '_blank')
         newDownloader.setAttribute('download', '')
