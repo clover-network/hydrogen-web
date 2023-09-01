@@ -419,6 +419,17 @@ export class Room extends BaseRoom {
         }
     }
 
+    async _getLastEventData() {
+        const lastKey = this._syncWriter.lastMessageKey;
+        if (lastKey) {
+            const txn = await this._storage.readTxn([
+                this._storage.storeNames.timelineEvents,
+            ]);
+            const eventEntry = await txn.timelineEvents.get(this._roomId, lastKey);
+            return eventEntry?.event;
+        }
+    }
+
     async clearUnread(log = null) {
         if (this.isUnread || this.notificationCount) {
             return await this._platform.logger.wrapOrRun(log, "clearUnread", async log => {
@@ -438,9 +449,11 @@ export class Room extends BaseRoom {
                 this._emitUpdate();
                 
                 try {
-                    const lastEventId = await this._getLastEventId();
-                    if (lastEventId) {
-                        await this._hsApi.receipt(this._roomId, "m.read", lastEventId);
+                    const lastEventData = await this._getLastEventData();
+                    if (lastEventData.origin_server_ts > this._summary.data.readData) {
+                        if (lastEventData.event_id) {
+                            await this._hsApi.receipt(this._roomId, "m.read", lastEventData.event_id);
+                        }
                     }
                 } catch (err) {
                     // ignore ConnectionError

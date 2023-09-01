@@ -67,8 +67,8 @@ export class ComposerViewModel extends ViewModel {
         this._roomVM._pickAndSendFile(e);
     }
 
-    sendVideo() {
-        this._roomVM._pickAndSendVideo();
+    sendVideo(e) {
+        this._roomVM._pickAndSendVideo(e);
     }
 
     get canSend() {

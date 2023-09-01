@@ -400,6 +400,10 @@ export class BaseRoom extends EventEmitter {
         return this._summary.data.lastMessageTimestamp;
     }
 
+    get readData() {
+        return this._summary.data.readData;
+    }
+
     get isLowPriority() {
         const tags = this._summary.data.tags;
         return !!(tags && tags['m.lowpriority']);

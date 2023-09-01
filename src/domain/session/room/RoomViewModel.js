@@ -96,7 +96,7 @@ export class RoomViewModel extends ViewModel {
         if (this._room.isArchived || this._clearUnreadTimout) {
             return;
         }
-        this._clearUnreadTimout = this.clock.createTimeout(2000);
+        this._clearUnreadTimout = this.clock.createTimeout(100);
         try {
             await this._clearUnreadTimout.elapsed();
             await this._room.clearUnread();
@@ -283,7 +283,7 @@ export class RoomViewModel extends ViewModel {
         return false;
     }
 
-    async _pickAndSendFile() {
+    async _pickAndSendFile(event) {
         try {
             const file = await this.platform.openFile();
             if (!file) {
@@ -321,7 +321,7 @@ export class RoomViewModel extends ViewModel {
         });
     }
 
-    async _pickAndSendVideo() {
+    async _pickAndSendVideo(event) {
         try {
             if (!this.platform.hasReadPixelPermission()) {
                 alert("Please allow canvas image data access, so we can scale your images down.");
@@ -368,7 +368,7 @@ export class RoomViewModel extends ViewModel {
         }
     }
 
-    async _pickAndSendPicture() {
+    async _pickAndSendPicture(event) {
         try {
             if (!this.platform.hasReadPixelPermission()) {
                 alert("Please allow canvas image data access, so we can scale your images down.");

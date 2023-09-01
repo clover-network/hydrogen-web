@@ -204,6 +204,7 @@ export class SummaryData {
         this.isDirectMessage = copy ? copy.isDirectMessage : false;
         this.dmUserId = copy ? copy.dmUserId : null;
         this.cloned = copy ? true : false;
+        this.readData = copy ? copy.readData : 0;
     }
 
     changedKeys(other) {
@@ -244,6 +245,10 @@ export class SummaryData {
 
     isNewJoin(oldData) {
         return this.membership === "join" && oldData.membership !== "join";
+    }
+
+    setNewReadData(ts) {
+        return this.readData = ts;
     }
 }
 

@@ -34,6 +34,9 @@ export class ImageHandle {
     get maxDimension() {
         return Math.max(this.width, this.height);
     }
+    get maxFileSizeLimitaion() {
+        return this.blob.size
+    }
 
     async _getDomElement() {
         if (!this._domElement) {
