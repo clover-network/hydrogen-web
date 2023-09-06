@@ -135,7 +135,7 @@ export class RoomMemberTile extends SimpleTile {
             }
         } else if (membership === "leave") {
             if (stateKey === sender) {
-                return `${targetName} left the guild`;
+                return `${targetName} left the room`;
             } else {
                 const reason = content.reason;
                 return `${targetName} was kicked from the room by ${senderName}${reason ? `: ${reason}` : ""}`;
