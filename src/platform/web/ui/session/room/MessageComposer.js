@@ -44,6 +44,17 @@ export class MessageComposer extends TemplateView {
             placeholder: vm => vm.isEncrypted ? "Send an encrypted message…" : "Send a message…",
             rows: "1"
         });
+        document.addEventListener('keydown', (event) => {
+            if (this._EmkojiPicker === null || this._EmkojiPicker.style.display === 'none') {
+                return
+            }
+            if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                this.closeEmoji(event, this._EmkojiPicker)
+                this._trySend();
+            }
+        })
+
         this._focusInput = () => this._input.focus();
         this.value.on("focus", this._focusInput);
         const replyPreview = t.map(vm => vm.replyViewModel, (rvm, t) => {

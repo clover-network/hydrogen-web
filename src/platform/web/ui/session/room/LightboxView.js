@@ -43,22 +43,40 @@ export class LightboxView extends TemplateView {
                 lightBoxDom = null
             }
         });
-        const image = t.div({
-            role: "img",
-            "aria-label": vm => vm.name,
-            title: vm => vm.name,
+        const image = t.img({
             className: {
                 picture: true,
                 hidden: vm => !vm.imageUrl,
             },
+            onClick: evt => {
+                evt.stopPropagation()
+                evt.preventDefault()
+            },
+            src: vm.imageUrl,
+            title: vm => vm.name,
             style: vm => `
-                background-image: url('${vm.imageUrl}'); 
                 max-width: ${vm.imageWidth}px; 
                 max-height: ${vm.imageHeight}px;
                 top:${(vm.imageHeight + 32) > window.innerHeight ? '0' : ((window.innerHeight - vm.imageHeight - 32) / 2) + 'px'};
                 left:${(vm.imageWidth + 32) > window.innerWidth ? '0' : ((window.innerWidth - vm.imageWidth - 32) / 2) + 'px'};
             `
-        });
+        })
+        // const image = t.div({
+        //     role: "img",
+        //     "aria-label": vm => vm.name,
+        //     title: vm => vm.name,
+        //     className: {
+        //         picture: true,
+        //         hidden: vm => !vm.imageUrl,
+        //     },
+        //     style: vm => `
+        //         background-image: url('${vm.imageUrl}');
+        //         max-width: ${vm.imageWidth}px;
+        //         max-height: ${vm.imageHeight}px;
+        //         top:${(vm.imageHeight + 32) > window.innerHeight ? '0' : ((window.innerHeight - vm.imageHeight - 32) / 2) + 'px'};
+        //         left:${(vm.imageWidth + 32) > window.innerWidth ? '0' : ((window.innerWidth - vm.imageWidth - 32) / 2) + 'px'};
+        //     `
+        // });
         let zoom = 1;
         const zoomingSpeed = 0.05;
 
@@ -113,8 +131,24 @@ export class LightboxView extends TemplateView {
         const dialog = t.div({
             role: "dialog",
             className: "lightbox",
-            onClick: evt => this.clickToClose(evt),
-            onKeydown: evt => this.closeOnEscKey(evt)
+            onClick: evt => {
+                evt.stopPropagation()
+                document.removeEventListener("wheel", wheelFunc)
+                document.removeEventListener("wheel", wheelFunc)
+                let lightBoxDom = document.getElementById('lightbox-main')
+                lightBoxDom.parentNode.removeChild(lightBoxDom)
+                lightBoxDom = null
+            },
+            onKeydown: evt => {
+                evt.stopPropagation()
+                document.removeEventListener("wheel", wheelFunc)
+                document.removeEventListener("wheel", wheelFunc)
+                let lightBoxDom = document.getElementById('lightbox-main')
+                lightBoxDom.parentNode.removeChild(lightBoxDom)
+                lightBoxDom = null
+            }
+            // onClick: evt => this.clickToClose(evt),
+            // onKeydown: evt => this.closeOnEscKey(evt)
         }, [imageContainer, loading, details, close]);
         trapFocus(t, dialog);
         return dialog;
@@ -122,13 +156,13 @@ export class LightboxView extends TemplateView {
 
     clickToClose(evt) {
         if (evt.target === this.root()) {
-            this.value.close();
+            this.value.close.onClick();
         }
     }
 
     closeOnEscKey(evt) {
         if (evt.key === "Escape" || evt.key === "Esc") {
-            this.value.close();
+            this.value.onClick();
         }
     }
 }

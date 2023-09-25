@@ -79,9 +79,9 @@ limitations under the License.
     grid-template:
         "dtime dtime" auto
         "avatar sender" auto
-        "avatar body" auto
+        "avatar body" 100fr
         "time body" 1fr
-        "time reactions" auto / 0px 1fr;
+        "time reactions" auto / 50px 1fr;
     border-left: 1px solid rgba(34, 34, 34, 0.1);
 }
 

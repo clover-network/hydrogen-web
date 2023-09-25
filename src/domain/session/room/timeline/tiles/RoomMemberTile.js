@@ -115,6 +115,7 @@ export class RoomMemberTile extends SimpleTile {
         const membership = content && content.membership;
         const prevMembership = prevContent && prevContent.membership;
         if (prevMembership === "join" && membership === "join") {
+            return ''
             if (content.avatar_url !== prevContent.avatar_url) {
                 return `${senderName} changed their avatar`;
             } else if (content.displayname !== prevContent.displayname) {

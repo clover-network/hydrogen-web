@@ -39,10 +39,9 @@ limitations under the License.
     grid-template:
         "dtime dtime" auto
         "avatar sender" auto
-        "avatar body" auto
-        "time   body" 1fr
-        "time   reactions" auto /
-        50px 1fr;
+        "avatar body" 100fr
+        "time body" 1fr
+        "time reactions" auto / 50px 1fr;
     column-gap: 10px;
     padding: 4px;
     max-width: 60%;
@@ -199,6 +198,7 @@ li .Timeline_messageSender {
 
 .Timeline_messageAvatar {
     grid-area: avatar;
+    align-self: end;
     cursor: pointer;
     text-decoration: none;
     width: 40px;
@@ -229,7 +229,7 @@ li .Timeline_messageSender {
 .Timeline_messageOptions3 {
     position: absolute;
     right: 8px;
-    top: 4px;
+    top: 50%;
     width: 16px;
     height: 16px;
     background-image: url('icons/arrow-ios-down.svg');

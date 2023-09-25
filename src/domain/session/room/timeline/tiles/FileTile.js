@@ -106,7 +106,8 @@ export class FileTile extends BaseMessageTile {
                 }
                 case SendStatus.Sending:
                 case SendStatus.Sent:
-                    return this.i18n`Sending ${filename}…`;
+                    const percent = Math.round((pendingEvent.attachmentsSentBytes / pendingEvent.attachmentsTotalBytes) * 100);
+                    return this.i18n`Uploading ${filename}: ${percent}%`;
                 case SendStatus.Error:
                     return this.i18n`Error: could not send ${filename}: ${pendingEvent.error.message}`;
                 default:
